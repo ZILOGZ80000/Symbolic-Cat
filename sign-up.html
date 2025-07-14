@@ -183,6 +183,7 @@
                 } else{
                     messageDiv.textContent = `🚨 ${result.message || 'Ошибка регистрации.'}`;
                     messageDiv.className = 'message error';
+                    console.log(result.details)
                 }
 
             } catch (error) {
