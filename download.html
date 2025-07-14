@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Скачать Symbolic Cat (Meow)</title>
+    <style>
+        :root {
+            --dark-purple: #4b0082;
+            --dark-blue: #00008b;
+            --background-color: #000000;
+            --text-color: #ffffff;
+            --button-hover-bg: #00008b;
+            --section-border-color: #00008b;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: var(--dark-purple);
+            text-align: center;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+        
+        /* Стили для переключателя (как на главной) */
+        .switch-container {
+            padding: 12px;
+            background: #000; /* Фон самого контейнера переключателя */
+            border-bottom: 2px solid var(--dark-purple);
+            width: 100%; /* Занимает всю ширину */
+            max-width: 800px; /* Ограничиваем ширину */
+            margin-bottom: 2rem; /* Отступ после переключателя */
+        }
+
+        .tab-switcher {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            display: flex;
+            gap: 4px;
+            max-width: 1200px; /* Ширина внутри контейнера */
+            justify-content: center; /* Центрируем табы */
+        }
+
+        .tab-switcher li {
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--text-color); /* Цвет текста в табах */
+            background-color: rgba(255, 255, 255, 0.1); /* Фон неактивных табов */
+        }
+
+        .tab-switcher li.active {
+            color: white;
+            background: var(--dark-purple) !important;
+        }
+
+        .tab-switcher
+li:not(.active):hover {
+            background: #1a1a1a;
+        }
+
+        .tab-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        /* Общие стили для секций с содержимым */
+        .content-section {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border: 1px solid var(--dark-purple);
+            padding: 30px;
+            margin-top: 20px; /* Отступ от верхнего края */
+            box-shadow: 0 0 20px rgba(75, 0, 130, 0.4);
+            text-align: center; /* Центрируем содержимое внутри */
+            display: none; /* По умолчанию скрываем все секции, JS покажет нужную */
+        }
+        .content-section.active {
+            display: block; /* Активная секция отображается */
+        }
+
+        /* Стили для каждой версии игры внутри секции */
+        .version-block {
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--section-border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px; /* Отступ между блоками версий */
+        }
+        .version-block:last-child {
+            margin-bottom: 0; /* Убираем отступ у последнего блока */
+        }
+
+        .version-block h3 {
+            color: var(--dark-blue);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+      .download-button {
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--dark-purple);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+        }
+
+        .download-button:hover {
+            background-color: var(--button-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 139, 0.3);
+        }
+
+        .system-info {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 0.5rem;
+        }
+
+        .return-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        .return-buttons .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--dark-purple);
+            color: var(--text-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .return-buttons .btn:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+}
+    </style>
+</head>
+<body>
+    <h1>Скачать Symbolic Cat (Meow)</h1>
+
+    <!-- Переключатель платформ -->
+    <div class="switch-container">
+        <ul class="tab-switcher">
+            <li class="active" data-platform="android" style="background: var(--dark-purple);">
+                <span>Android</span>
+            </li>
+            <li data-platform="windows">
+                <span>Windows</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Контейнер для содержимого Android -->
+    <div id="android-content" class="content-section active">
+        <div class="version-block">
+            <h3>Версия 1.0.0 (APK)</h3>
+            <a href="ВАША_ССЫЛКА_НА_APK.apk" class="download-button" download>
+                Скачать (80 МБ)
+            </a>
+            <p class="system-info">Минимальная версия системы: Android 5.0+</p>
+            <p class="system-info">Дата обновления: 23.05.2025</p>
+        </div>
+        
+        <div class="version-block">
+            <h3>Версия 0.9.5 (Тестовая)</h3>
+            <a href="ВАША_ССЫЛКА_НА_СТАРУЮ_APK.apk" class="download-button" download>
+                Скачать (75 МБ)
+            </a>
+            <p class="system-info">Минимальная версия системы: Android 4.4+</p>
+            <p class="system-info">Дата обновления: 01.05.2025</p>
+        </div>
+    </div>
+
+    <!-- Контейнер для содержимого Windows -->
+    <div id="windows-content" class="content-section">
+        <div class="version-block">
+            <h3>Версия 1.0.0
+(EXE/ZIP)</h3>
+            <a href="ВАША_ССЫЛКА_НА_EXE_ZIP.zip" class="download-button" download>
+                Скачать (150 МБ)
+            </a>
+            <p class="system-info">Минимальная версия системы: Windows 7+</p>
+            <p class="system-info">Дата обновления: 23.05.2025</p>
+        </div>
+
+        <div class="version-block">
+            <h3>Версия 0.9.8 (Бета)</h3>
+            <a href="ВАША_ССЫЛКА_НА_СТАРУЮ_EXE_ZIP.zip" class="download-button" download>
+                Скачать (140 МБ)
+            </a>
+            <p class="system-info">Минимальная версия системы: Windows 7+</p>
+            <p class="system-info">Дата обновления: 15.04.2025</p>
+        </div>
+    </div>
+
+    <div class="return-buttons">
+        <a href="index.html" class="btn">Вернуться на главную</a>
+        <a href="index.html#play-online" class="btn">Играть онлайн</a> 
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-switcher li');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function showContent(platform) {
+                // Скрываем все секции
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Убираем активный класс со всех табов
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+
+tab.style.background = 'rgba(255, 255, 255, 0.1)'; // Возвращаем фон неактивным
+                });
+
+                // Показываем нужную секцию
+                document.getElementById(`${platform}-content`).classList.add('active');
+
+                // Активируем нужный таб
+                document.querySelector(`.tab-switcher li[data-platform="${platform}"]`).classList.add('active');
+                document.querySelector(`.tab-switcher li[data-platform="${platform}"]`).style.background = 'var(--dark-purple)';
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const platform = tab.dataset.platform; // Получаем значение data-platform
+                    showContent(platform);
+                });
+            });
+
+            // Показываем Android по умолчанию при загрузке страницы
+            showContent('android');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" contents="width=device-width, initial-scale=1">
+<title>Топ кисиков</title>
+<style>:root {
+--dark-purple: #4b0082;
+--dark-blue: #00008b;
+--background-color: #000000;
+--text-color: #ffffff;
+}
+
+body {
+margin: 0;
+background-color: var(--background-color);
+color: var(--text-color);
+font-family: Arial, sans-serif;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+header {
+text-align: center;
+padding: 2rem 1rem;
+}
+
+.game-icon {
+width: 100px;
+height: 100px;
+margin-bottom: 1rem;
+}
+
+h1 {
+color: var(--dark-purple);
+margin: 0;
+font-size: 2.5rem;
+text-transform: uppercase;
+}
+/* Стили для переключателя */
+.switch-container {
+  padding: 12px;
+  background: #000;
+  border-bottom: 2px solid var(--dark-purple);
+}
+
+.tab-switcher {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  display: flex;
+  gap: 4px;
+  max-width: 1200px;
+}
+
+.tab-switcher li {
+  padding: 10px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.tab-switcher li.active {
+  color: white;
+  background: var(--dark-purple) !important;
+}
+
+.tab-switcher li:not(.active):hover {
+  background: #1a1a1a;
+}
+
+.tab-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}</style>
+<!-- Переключатель вверху -->
+<div class="switch-container">
+<ul class="tab-switcher">
+<li>
+<a href="index.html" class="tab-link">Главная</a>
+</li>
+<li>
+<a href="comments.html" class="tab-link">Обсуждение</a>
+</li>
+<li class="active" style="background: var(--dark-purple);">
+<span>Топ</span></li></ul></div>
+
+<h1><center>Топ котиков</center></h1>
+<h4> топ кисиков пока не готов </h4>
+<h4>Погодит чут чут</h4>
+
+

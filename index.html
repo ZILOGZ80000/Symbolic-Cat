@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Symbolic Cat (Meow)</title>
+  <style>
+    :root {
+      --dark-purple: #4b0082;
+      --dark-blue: #00008b;
+      --background-color: #000000;
+      --text-color: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+.game-icon {
+  width: auto;     /* Берёт оригинальный размер изображения */
+  height: auto;    /* Сохраняет пропорции */
+  max-width: 100%; /* Защита от переполнения */
+  max-height: 200px; /* Максимум на комфортный размер */
+  display: block;  /* Убирает лишние отступы */
+  margin: 0 auto 1rem; /*и Центрирование */
+}
+
+   
+
+    h1 {
+      color: var(--dark-purple);
+      margin: 0;
+      font-size: 2.5rem;
+      text-transform: uppercase;
+    }
+    .screenshots-container {
+      overflow-x: auto;
+      padding: 1rem 0;
+    }
+
+    .screenshots {
+      display: flex;
+      gap: 20px;
+      padding: 0 20px;
+      min-width: fit-content;
+    }
+
+    .screenshot {
+      width: 300px;
+      height: 180px;
+      border-radius: 10px;
+      border: 3px solid var(--dark-purple);
+      transition: border-color 0.3s ease;
+      object-fit: cover;
+    }
+
+    .screenshot:hover {
+      border-color: var(--dark-blue);
+    }
+
+    .main-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--dark-purple);
+      color: var(--text-color);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--dark-blue);
+      transform: translateY(-2px);
+    }
+    .divider-line {
+  width: 80%;
+  border: 1px solid var(--dark-purple);
+  margin: 1rem auto;
+}
+    .text {
+      color: var(--dark-blue);
+    }
+    .discussion-section {
+  padding: 20px;
+}
+/* Добавляем эти стили в секцию CSS */
+.section-title {
+  text-align: center;
+  color: var(--text-color) !important;
+  margin: 2rem 0;
+  font-size: 1.8em;
+  position: relative;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: var(--dark-purple);
+  margin: 10px auto 0;
+}
+/* Стили для переключателя */
+.switch-container {
+  padding: 12px;
+  background: #000;
+  border-bottom: 2px solid var(--dark-purple);
+  position: relative;
+  /*padding-bottom: 50px; /* Добавляем место под кнопку */
+}
+
+.login-btn {
+  /* Позиционирование */
+  position: absolute;
+  top: 75px; /* Отступ сверху = высота переключателя + 10px */
+  right: 20px;
+  z-index: 1000;
+
+  /* Стилизация */
+  padding: 12px 24px;
+  background: linear-gradient(45deg, 
+    var(--dark-purple), 
+    var(--dark-purple)
+  );
+  color: white;
+  border: 2px solid var(--dark-purple );
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+
+  /* Тень и анимация */
+  box-shadow: 0 4px 15px rgba(75,0,130,0.3);
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(75,0,130,0.5);
+}
+
+
+/* Убираем растягивание на мобильных * /
+@media (max-width: 768px) {
+  .login-btn {
+    margin: 15px 10px 0 0;
+    padding: 8px 20px;
+    float: right;
+  }
+}*/
+
+
+
+.tab-switcher {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto; 
+  display: flex;
+  gap: 4px;
+  max-width: 1200px;
+}
+
+.tab-switcher li {
+  padding: 10px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.tab-switcher li.active {
+  color: white;
+  background: var(--dark-purple) !important;
+}
+
+.tab-switcher li:not(.active):hover {
+  background: #1a1a1a;
+}
+
+.tab-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+} 
+
+
+  </style>
+</head>
+
+<body>
+  <!-- Начало переключателя -->
+  <div class="switch-container">
+    <ul class="tab-switcher">
+      <li class="active" style="background: var(--dark-purple);">
+        <span>Главная</span>
+      </li>
+      <li>
+        <a href="comments.html" class="tab-link">Обсуждение</a>
+      </li>
+      <li>
+        <a href="top.html" class="tab-link">Топ</a>
+      </li>
+    </ul>
+    <!--<button class="login-btn">войти </button>-->
+  </div>
+  <button class="login-btn" id="loginButton">войти </button>
+  <!-- Конец переключателя -->
+  <header>
+    <img src="icon.png" alt="Game Icon" class="game-icon">
+    <h1>symbolic cat(meow)</h1>
+  </header>
+
+  <main>
+    <!--<p class="description">
+      <hr class="divider-line">
+      <center>Описание</center>
+      <a>мне лень писать</a>-->
+    </p>
+    <div class="description" style="border: 2px solid var(--dark-blue); border-radius: 10px; padding: 10px;">
+  <!--<hr class="divider-line">-->
+  <h2><center style="color: var(--dark-blue);">Описание</center></h2>
+  <!--<h3 style="color: var(--dark-purple); padding: 15px;">потом напишу</h3>-->
+<h2 style="color: var(--dark-blue); text-align: center; margin-bottom: 20px;">Что такое Symbolic Cat (Meow)?</h2>
+<p style="padding: 0 15px; text-align: justify; line-height: 1.6;">
+  **Symbolic Cat (Meow)** — это уникальное приключение в жанре текстового платформера с элементами RPG и захватывающего онлайн-мультиплеера.
+  Погрузитесь в мир, полностью созданный из символов Unicode, где каждый элемент — от деревьев до монстров — оживает благодаря удивительной графике, окрашенной в таинственные оттенки синего и фиолетового.
+</p>
+
+<h2 style="color: var(--dark-blue); text-align: center; margin-top: 30px; margin-bottom: 20px;">Окунись в Символьный Мир!</h2>
+<p style="padding: 0 15px; text-align: justify; line-height: 1.6;">
+  Вы играете за обычного котика, который после загадочного удара током от компьютера оказывается уменьшенным и перенесенным в невероятный Символьный мир.
+  Ваша цель — найти путь обратно в реальность, исследуя три уникальных мира:
+  <strong style="color: var(--dark-purple);">Лес</strong> (природные пейзажи из символов),
+  <strong style="color: var(--dark-purple);">Луна</strong> (космические просторы с низкой гравитацией) и
+  <strong style="color: var(--dark-purple);">Бинарный мир</strong> (технологичный ландшафтиз единиц и нулей).
+Каждый мир таит 15 уникальных уровней и множество секретов, включая скрытый мир, который ждет самых любопытных!
+</p>
+
+<h2 style="color: var(--dark-blue); text-align: center; margin-top: 30px; margin-bottom: 20px;">Геймплей и Возможности</h2>
+<p style="padding: 0 15px; text-align: justify; line-height: 1.6;">
+  Освойте бег, прыжки и уникальные способности, активируемые символами: от **ускорения (≫)** и **замедления (≪)** до **высоких прыжков (∧)** и даже **телепортации в коробках (📦)**, дающей временную невидимость!
+  Собирайте рыбок (><((('>)), чтобы открывать новые скины и улучшения.
+</p>
+<p style="padding: 0 15px; text-align: justify; line-height: 1.6;">
+  Присоединяйтесь к другим игрокам в онлайн-режиме: общайтесь, обменивайтесь ресурсами, добавляйте друзей и даже участвуйте в захватывающих командных битвах!
+  **Symbolic Cat (Meow)** — это приключение, полное загадок, символов и кошачьих приключений!
+</p>
+</div>
+
+
+    <div class="main-buttons">
+      <button class="btn">Скачать</button>
+      <button class="btn">Попробовать</button>
+    </div>
+<!-- В вашем index.html -->
+<div id="news-container"></div>
+
+<script>
+// Загрузка новостей из отдельного файла
+fetch('news.html')
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById('news-container').innerHTML = html;
+  });
+</script>
+
+    <hr class="divider-line">
+    <div class="screenshots-container">
+      <div class="screenshots">        <img src="screenshot1.jpg" class="screenshot">
+        <img src="screenshot2.jpg" class="screenshot">
+        <img src="screenshot3.jpg" class="screenshot">
+      </div>
+    </div>
+    <hr class="divider-line">
+    
+<div class="description" style="border: 2px solid var(--dark-blue); border-radius: 10px; padding: 10px;">
+  <!--<hr class="divider-line">-->
+  <h2><center style="color: var(--dark-blue);">Уровни</center></h2>
+  <h3 style="color: var(--dark-purple); padding: 15px;">В игре 45 уровней и 3 карты(лес, луна, бинарный мир).
+  В каждом уровне находится по одной рыбе которую не ток то и просто достать.
+  </h3>
+  <!--<details class="levels-spoiler">
+  <summary>Уровни карты «лес» (тыкни)</summary>
+  <center>Уровень 1</center>
+  <div>Название: <название></div>
+  <div>Описание: <описание></div>
+  <div>Символы: <символы></div>
+</details>-->
+<details class="levels-spoiler">
+<summary style="padding: 10px; color: var(--dark-purple);">Уровни карты «лес» (тыкни)</summary>
+
+  <!-- Уровень 1 -->
+  <div class="level">
+    <center>Уровень 1</center>
+    <div>Название: "Прогулка по лесу"</div>
+    <div>Описание: Простой уровень для обучения, где нужно будет просто пройтись по лесу, прыгать через небольшие препятствия, и использовать ускорение</div>
+    <div>Механика: Ускорение</div>
+    <div>Сложность: Легко</div>
+    <div>Символы: Простые деревья, кусты, и ровный пол</div>
+  </div>
+<a href="/404..html" class="abobus-link">ඩා</a>
+
+<style>
+.abobus-link {
+  /* Стили для видимости */
+  color: #4b0082;
+  font-size: 24px;
+  text-decoration: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  cursor: help;
+  transition: 0.3s;
+}
+
+.abobus-link:hover {
+  transform: scale(1.2);
+}
+</style>
+
+  <!-- Уровень 2 -->
+  <div class="level">
+    <center>Уровень 2</center>
+    <div>Название: "Узкие тропинки"</div>
+    <div>Описание: Уровень с узкими платформами, где нужно будет точно прыгать и балансировать</div>
+    <div>Механика: Прыжки и баланс</div>
+    <div>Сложность: Легко</div>
+    <div>Символы: Тонкие платформы, и небольшие деревья</div>
+  </div>
+
+  <!-- Уровень 3 -->
+  <div class="level">
+    <center>Уровень 3</center>
+    <div>Название: "Замедление"</div>
+    <div>Описание: На уровне используются символы замедления, что усложнит прохождения</div>
+    <div>Механика: Замедление</div>
+    <div>Сложность: Средне</div>
+    <div>Символы: Знаки замедления</div>
+  </div>
+
+  <!-- Уровень 4 -->
+  <div class="level">
+    <center>Уровень 4</center>
+    <div>Название: "Прыжки"</div>
+    <div>Описание: Уровень, где используются знаки прыжка, что бы перепрыгнуть через препятствия</div>
+    <div>Механика: Прыжки</div>
+    <div>Сложность: Средне</div>
+    <div>Символы: Знаки прыжка</div>
+  </div>
+
+  <!-- Уровень 5 -->
+  <div class="level">
+    <center>Уровень 5</center>
+    <div>Название: "Комбинация"</div>
+    <div>Описание: Уровень, где тебе нужно использовать знаки ускорения, замедления и прыжка</div>
+    <div>Механика: Замедление, ускорение, прыжки</div>
+    <div>Сложность: Средне</div>
+    <div>Символы: Комбинации разных символов</div>
+  </div>
+
+  <!-- Уровень 6 -->
+  <div class="level">
+    <center>Уровень 6</center>
+    <div>Название: "Длинный путь"</div>
+    <div>Описание: Длинный уровень с большим количеством препятствий и платформ</div>
+    <div>Механика: Бег и прыжки</div>
+    <div>Сложность: Легко</div>
+    <div>Символы: Платформы, и простые деревья</div>
+  </div>
+
+  <!-- Уровень 7 -->
+  <div class="level">
+    <center>Уровень 7</center>
+    <div>Название: "Пропасть"</div>
+    <div>Описание: Уровень где есть большая пропасть которую нужно перепрыгнуть используя знаки прыжка</div>
+    <div>Механика: Прыжки</div>
+    <div>Сложность: Средне</div>
+    <div>Символы: Пропасть, знаки прыжка</div>
+  </div>
+
+  <!-- Уровень 8 -->
+  <div class="level">
+    <center>Уровень 8</center>
+    <div>Название: "Побег"</div>
+    <div>Описание: Уровень, где нужно убегать от какого-нибудь опасного символа</div>
+    <div>Механика: Бег и ускорение</div>
+    <div>Сложность: Средне</div>
+    <div>Символы: Знаки ускорения и опасный символ</div>
+  </div>
+
+  <!-- Уровень 9 -->
+  <div class="level">
+    <center>Уровень 9</center>
+    <div>Название: "Котики"</div>
+    <div>Описание: На этом уровне, игрок должен будет собирать монетки котиков</div>
+    <div>Механика: Сбор монеток</div>
+    <div>Сложность: Легко</div>
+    <div>Символы: Котики (разных видов)</div>
+  </div>
+
+  <!-- Уровень 10 -->
+  <div class="level">
+    <center>Уровень 10</center>
+    <div>Название: "Секрет"</div>
+    <div>Описание: На этом уровне ты можешь спрятать пасхалку, или котика, или что-то еще</div>
+    <div>Механика: Поиск</div>
+    <div>Сложность: Легко</div>
+    <div>Символы: Секретные символы</div>
+  </div>
+
+  <!-- Уровень 11 -->
+  <div class="level">
+    <center>Уровень 11</center>
+    <div>Название: "Переход"</div>
+    <div>Описание: Уровень, где нужно использовать порталы, или перемещающие платформы</div>
+    <div>Механика: Телепортация</div>
+    <div>Сложность: Средне</div>
+    <div>Символы: Символы порталов</div>
+  </div>
+
+  <!-- Уровень 12 -->
+  <div class="level">
+    <center>Уровень 12</center>
+    <div>Название: "Головоломка"</div>
+    <div>Описание: Уровень, где нужно будет решить головоломку</div>
+    <div>Механика: Логика</div>
+    <div>Сложность: Средне</div>
+    <div>Символы: Символы которые будут помогать решать головоломку</div>
+  </div>
+
+  <!-- Уровень 13 -->
+  <div class="level">
+    <center>Уровень 13</center>
+    <div>Название: "Прятки"</div>
+    <div>Описание: Уровень, где ты можешь спрятать много коробок, и игрок должен телепортироваться между ними</div>
+    <div>Механика: Телепортация, скрытность</div>
+    <div>Сложность: Средне</div>
+    <div>Символы: Символы коробок</div>
+  </div>
+
+  <!-- Уровень 14 -->
+  <div class="level">
+    <center>Уровень 14</center>
+    <div>Название: "Охота"</div>
+    <div>Описание: Уровень где будет динамика и скорость</div>
+    <div>Механика: Прыжки, скорость</div>
+    <div>Сложность: Сложно</div>
+    <div>Символы: Комбинации всех символов</div>
+  </div>
+
+  <!-- Уровень 15 -->
+  <div class="level">
+    <center>Уровень 15</center>
+    <div>Название: "Финальный тест"</div>
+    <div>Описание: Сложный уровень, где используется всё что игрок изучил</div>
+    <div>Механика: Всё из изученного</div>
+    <div>Сложность: Очень сложно</div>
+    <div>Символы: Все символы вместе</div>
+  </div>
+
+</details>
+</div>
+<style>
+.levels-spoiler .level {
+  margin: 15px 0;
+  padding: 10px;
+  border: 2px solid var(--dark-purple);
+  border-radius: 10px;
+  background: #000;
+}
+
+.levels-spoiler div {
+  margin: 6px 0;
+  padding-left: 15px;
+  line-height: 1.4;
+}
+
+.levels-spoiler center {
+  font-weight: 700;
+  color: var(--dark-purple);
+  margin: 12px 0;
+  font-size: 1.1em;
+}
+</style>
+
+
+  </main>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginButton = document.getElementById('loginButton');
+      const userNick = localStorage.getItem('userNick');
+
+      if (userNick) {
+        // Если ник есть, превращаем кнопку "Войти" в ссылку "Аккаунт"
+        // Создаем новую ссылку (<a>) и копируем в неё стили и текст
+        const accountLink = document.createElement('a');
+        accountLink.setAttribute('href', `account.html?user=${userNick}`);
+        accountLink.textContent = 'Аккаунт';
+        accountLink.className = 'login-btn'; // Применяем стили кнопки
+
+        // Заменяем оригинальную кнопку "Войти" на новую ссылку "Аккаунт"
+        loginButton.parentNode.replaceChild(accountLink, loginButton);
+
+      } else {
+        // Если ника нет, убеждаемся, что кнопка "Войти" видна и её текст правильный
+        // (на случай, если она была изменена каким-то другим скриптом или состоянием)
+        loginButton.classList.remove('hidden'); // Убедимся, что не скрыта
+        loginButton.textContent = 'войти'; // Убедимся, что текст правильный
+        loginButton.removeAttribute('href'); // Убираем href, если он мог быть
+      }
+    });
+</script>
+</body>
+
+<!--
+<footer>
+<div class="footer-content">
+<div class="footer-section about">
+<h3>Symbolic Cat (Meow)</h3>
+<p>Приключение в символьном мире, где каждый шаг — это загадка, а каждая рыбка — победа. <!--Разработано ZILOG Z80 ඩා :3 ^_^.-   -></p>
+</div>
+<div>
+<a style="color: black;стиль-чтобы-текст-небыл-подчеркнут" href="https://t.me/symbolic_cat_meow" target="_blank">Telegram</a>
+ <a style="color: black;стиль-чтобы-текст-небыл-подчеркнут" href="" target="_blank">GitHub</a>
+         </div>
+       </div>
+       </div>
+<div style="color: black;">
+&copy; 2025 Symbolic Cat (Meow). Все права защищены.
+</div>
+</footer>
+<style>
+/* --- Стили для Футера --- */
+footer {
+  background-color: var(--dark-purple);
+  color: var(--text-color);
+  padding: 1rem; /* Очень компактный padding */
+  margin-top: auto; /* Прижимает футер к низу страницы */text-align: center;
+  border-top: 2px solid var(--dark-purple);
+  /*width: 100%;*/
+  flex-shrink: 0;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 900px; /* Уменьшил максимальную ширину контента */
+  margin: 0 auto 0.8rem; /* Отступ между секциями */
+  gap: 0.5rem; /* Ещё уменьшил отступ между секциями */
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 150px; /* Уменьшил минимальную ширину секции */
+  max-width: 220px; /* Уменьшил максимальную ширину секции */
+  padding: 0 0.2rem; /* Очень маленький отступ внутри секции */
+  text-align: center; /* Центрируем текст в секциях */
+}
+
+.footer-section h3 {
+  color: black;
+  margin-bottom: 0.5rem; /* Маленький отступ */
+  font-size: 1rem; /* Маленький размер шрифта */
+  text-align: center; /* Заголовки центрируем */
+}
+
+/* Убрал ::after полностью, чтобы не было никаких линий под заголовками */
+.footer-section h3::after {
+  content: none;
+}
+
+.footer-section p {
+  font-size: 1.2rem;
+  line-height: 1.3;
+  text-align: center; /* Центрируем текст */
+  color: black;
+}
+
+.footer-section ul {
+  list-style: disc; /* Оставляем точки */
+  padding-left: 0; /* Убираем отступ, если центрируем */
+  margin: 0;
+  list-style-position: inside; /* Перемещаем маркеры внутрь элемента списка для центрирования */
+}
+
+.footer-section ul li {
+  margin-bottom: 0.3rem; /* Ещё меньше отступ */
+}
+
+.footer-section ul li a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size:0.8rem; /* Ещё уменьшил размер шрифта */
+}
+
+.footer-section ul li a:hover {
+  color: var(--dark-purple);
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+  
+}
+
+.social-links a {
+  color: var(--dark-blue);
+  font-size: 0.85rem; /* Ещё уменьшил размер шрифта */
+  text-decoration: none;
+  border: 1px solid var(--dark-blue);
+  border-radius: 3px; /* Меньшее скругление */
+  padding: 0.2rem 0.6rem; /* Ещё меньше padding */
+  white-space: nowrap; /* Чтобы текст не переносился */
+}
+
+.social-links a:hover {
+  background-color: var(--dark-blue);
+  color: white;
+  border-color: var(--dark-purple);
+}
+
+/* Для адаптивности на маленьких экранах */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem; /* Уменьшил отступ */
+  }
+
+  .footer-section {
+    width: 90%;
+    max-width: 250px;
+    padding: 0;
+    text-align: center;
+  }
+}
+</style>
+-->
+</html>

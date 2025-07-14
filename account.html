@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Аккаунт - Symbolic Cat</title>
+    <style>
+        :root {
+            --dark-purple: #4b0082;
+            --dark-blue: #00008b;
+            --background-color: #000000;
+            --text-color: #ffffff;
+            --section-bg: rgba(0, 0, 0, 0.4);
+            --section-border: 1px solid var(--dark-purple);
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Начинаем сверху */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: var(--section-bg);
+            border-radius: 12px;
+            border: var(--section-border);
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 0 20px rgba(75, 0, 130, 0.4);
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--dark-purple);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: var(--dark-blue);
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            text-align: center;
+        }
+        h2::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--dark-blue);
+            margin: 10px auto 0;
+        }
+
+        .profile-info, .game-stats, .skins-achievements {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--dark-blue);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .profile-info p, .game-stats p {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        .profile-info strong, .game-stats strong {
+            color: var(--dark-purple);
+        }
+
+        .skins-list, .achievements-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .skin-item, .achievement-item {
+            background: rgba(75, 0, 130, 0.2);
+            border: 1px solid var(--dark-purple);
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .loading-message, .error-message {
+            font-size: 1.2rem;
+ color: #aaa;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .error-message {
+            color: red;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--dark-purple);
+            color: var(--text-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--dark-blue);
+            color: var(--dark-blue);
+        }
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--dark-purple);
+            border-color: var(--dark-purple);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="accountTitle">Мой Аккаунт</h1>
+        <div id="loadingMessage" class="loading-message">Загрузка данных аккаунта...</div>
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <div id="accountContent" style="display: none;">
+            <div
+class="profile-info">
+                <h2>Профиль</h2>
+                <p><strong>Ник:</strong> <span id="profileUsername"></span></p>
+                <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+            </div>
+
+            <div class="game-stats">
+                <h2>Игровая Статистика</h2>
+                <p><strong>Рыбки:</strong> <span id="statFishs"></span></p>
+                <p><strong>Пройденные уровни:</strong> <span id="statLevels"></span></p>
+            </div>
+
+            <div class="skins-achievements">
+                <h2>Мои Скины</h2>
+                <div id="skinsList" class="skins-list"></div>
+                <h2>Мои Достижения</h2>
+                <div id="achievementsList" class="achievements-list"></div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn logout-btn" id="logoutButton">Выйти</button>
+            <a href="index.html" class="btn">На главную</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('user'); // Получаем ник из URL
+
+            const accountTitle = document.getElementById('accountTitle');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const accountContent =
+document.getElementById('accountContent');
+
+            const profileUsername = document.getElementById('profileUsername');
+            const profileEmail = document.getElementById('profileEmail');
+            const statFishs = document.getElementById('statFishs');
+            const statLevels = document.getElementById('statLevels');
+            const skinsList = document.getElementById('skinsList');
+            const achievementsList = document.getElementById('achievementsList');
+            const logoutButton = document.getElementById('logoutButton');
+
+            // Проверка, есть ли ник в URL
+            if (!username) {
+                loadingMessage.style.display = 'none';
+                errorMessage.textContent = 'Ошибка: Имя пользователя не указано в адресе.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Устанавливаем заголовок
+            accountTitle.textContent = `Аккаунт: ${username}`;
+
+            // ВАЖНО: Тебе нужно создать Netlify Function для ЧТЕНИЯ данных пользователя
+            // Этот API_ENDPOINT будет адресом твоей новой Netlify Function.
+            const GET_ACCOUNT_API_ENDPOINT = `/.netlify/functions/get-account`; // Например, get-account.js
+
+            try {
+                // Отправляем запрос "Курьеру" (Netlify Function) для получения данных пользователя
+                const response = await fetch(GET_ACCOUNT_API_ENDPOINT, {
+                    method: 'POST', // Используем POST,чтобы передать ник в теле запроса
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username: username }) // Отправляем ник
+                });
+
+                const result = await response.json(); // Получаем ответ от "Курьера"
+
+                if (response.ok) {
+                    const userData = result.user; // "Курьер" должен вернуть данные пользователя под ключом 'user'
+                    if (userData) {
+                        profileUsername.textContent = username;
+                        // Email можем показать частично для приватности
+                        profileEmail.textContent = userData.Emai ? `${userData.Emai.substring(0, 3)}***@***.com` : 'Не указан';
+                        statFishs.textContent = userData.Fishs || 0;
+                        statLevels.textContent = userData.Levels || 0;
+
+                        // Отображаем скины
+                        if (Array.isArray(userData.Skins) && userData.Skins.length > 0) {
+                            skinsList.innerHTML = userData.Skins.map(skinId => `<span class="skin-item">Скин ${skinId}</span>`).join('');
+                        } else {
+                            skinsList.innerHTML = '<span class="skin-item">Скинов пока нет.</span>';
+                        }
+
+                        // Отображаем ачивки
+                        if (Array.isArray(userData.Acivki) && userData.Acivki.length > 0) {
+                          achievementsList.innerHTML = userData.Acivki.map(achId => `<span class="achievement-item">Достижение ${achId}</span>`).join('');
+                        } else {
+                            achievementsList.innerHTML = '<span class="achievement-item">Достижений пока нет.</span>';
+                        }
+
+                        loadingMessage.style.display = 'none';
+                        accountContent.style.display = 'block'; // Показываем контент аккаунта
+                    } else {
+                        throw new Error('Данные пользователя не найдены.');
+                    }
+                } else {
+                    throw new Error(result.message || 'Не удалось загрузить данные аккаунта.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка загрузки данных аккаунта:', error);
+                loadingMessage.style.display = 'none';
+                errorMessage.textContent = `Ошибка: ${error.message}. Возможно, аккаунт не найден или проблемы с сервером.`;
+                errorMessage.style.display = 'block';
+            }
+
+            // Обработчик для кнопки "Выйти"
+            logoutButton.addEventListener('click', () => {
+                localStorage.removeItem('userNick'); // Удаляем ник из localStorage
+                window.location.href = 'index.html'; // Перенаправляем на главную
+            });
+        });
+    </script>
+</body>
+</html>Что здесь происходит:
+1. HTML-структура:
+  2. Создан основной

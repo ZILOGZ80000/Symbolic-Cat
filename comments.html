@@ -1,0 +1,462 @@
+<!--<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комментарии</title>
+    <style>
+                :root {
+            --dark-purple: #4b0082;
+            --background-color: #000000;
+            --text-color: #ffffff;
+            --hover-effect: rgba(75, 0, 130, 0.2);
+            --dark-blue: #00008b;
+        }
+ html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box; /* Учитываем padding в ширине элементов */
+}
+
+        /* Глобальные стили */
+        body {
+            margin: 0;
+            background: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .divider-line {
+            width: 80%;
+            border: 1px solid var(--dark-blue);
+            margin: 1rem auto;
+        }
+  
+        /* Переключатель (ВВЕРХУ) */
+        /* Стили для переключателя */
+.switch-container {
+    padding: 12px;
+    background: #000;
+    border-bottom: 2px solid var(--dark-purple);
+}
+
+.tab-switcher {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    max-width: 1200px;
+}
+
+.tab-switcher li {
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.tab-switcher li.active {
+    color: white;
+    background: var(--dark-purple) !important;
+}
+
+.tab-switcher li:not(.active):hover {
+    background: #1a1a1a;
+}
+
+.tab-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+        
+/* Стили для комментариев */
+.comments-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 0px;
+        }
+        
+        .comment-item {
+            margin: 0.1rem 0;
+            padding: 0.9rem;
+            background: rgba(0, 0, 0, 0.4);
+            /*border-radius: 12px;
+            border: 1px solid rgba(75, 0, 130, 0.3); */
+            transition: transform 0.2s ease;
+            
+            overflow: hidden;           /* Скрывает выпадающий контент */
+            width: 100%;                /* Фиксированная ширина */
+
+        }
+        
+        .comment-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .comment-author {
+            color: var(--dark-purple);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1em;
+        }
+        
+.comment-text {
+    margin: 0;
+    white-space: pre-line;
+    /* Учитывает \n в тексте */
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    max-width: 100%;
+    color: var(--text-color);
+}
+
+
+
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2em;
+            margin: 2rem 0;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--dark-purple);
+            margin: 10px auto 0;
+        }
+.raw-comment {
+    white-space: pre-wrap; /* Разрешает переносы */
+    word-break: break-word;
+    font-family: inherit; /* Убирает моноширинный шрифт */
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 8px;
+    background: transparent;
+}
+
+
+.add-comment-button {
+    display: block;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--dark-purple); /* Используем CSS-переменную */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1000; /* Поверх других элементов */
+}
+.add-comment-button:hower{
+    color: var(--dark-blue);
+}
+    </style>
+</head>
+<body>
+    <!-- Переключатель вверху ->
+    <div class="switch-container">
+        <ul class="tab-switcher">
+            <li>
+                <a href="index.html" class="tab-link">Главная</a>
+            </li>
+            <li class="active" style="background: var(--dark-purple);">
+                <span>Обсуждение</span>
+            </li>
+            <li>
+                <a href="top.html" class="tab-link">Топ</a>
+            </li>
+        </ul>
+    </div>
+
+    <section class="comments-container">
+        <!--<h2 class="section-title">Последние комментарии</h2>->
+        <div id="comments-list"></div>
+    </section>
+
+
+    <script src="comments.js"></script>
+<script>
+function renderComments() {
+    const container = document.getElementById('comments-list');
+    if (!container || !window.comments) return;
+
+    const reversedComments = [...window.comments].reverse();
+
+    container.innerHTML = reversedComments.map((comment, index) => `
+        <div class="comment-item">
+            <pre class="raw-comment">${comment}</pre>
+            ${index !== reversedComments.length - 1 ? '<hr class="divider-line">' : ''}
+        </div>
+    `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', renderComments);
+</script>
+
+</body>
+<button class="add-comment-button" onclick="window.location.href='add-comment.html'">
+  Добавить комментарий
+</button>
+
+</html>-->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обсуждение</title>
+    <style>
+                :root {
+            --dark-purple: #4b0082;
+            --background-color: #000000;
+            --text-color: #ffffff;
+            --hover-effect: rgba(75, 0, 130, 0.2);
+            --dark-blue: #00008b;
+        }
+ html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box; /* Учитываем padding в ширине элементов */
+}
+
+        /* Глобальные стили */
+        body {
+            margin: 0;
+            background: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .divider-line {
+            width: 80%;
+            border: 1px solid var(--dark-blue);
+            margin: 1rem auto;
+        }
+  
+        /* Переключатель (ВВЕРХУ) */
+        /* Стили для переключателя */
+.switch-container {
+    padding: 12px;
+    background: #000;
+    border-bottom: 2px solid var(--dark-purple);
+}
+
+.tab-switcher {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    max-width: 1200px;
+}
+
+.tab-switcher li {
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.tab-switcher li.active {
+    color: white;
+    background: var(--dark-purple) !important;
+}
+
+.tab-switcher li:not(.active):hover {
+    background: #1a1a1a;
+}
+
+.tab-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+        
+/* Стили для комментариев */
+.comments-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 0px;
+        }
+        
+        .comment-item {
+            margin: 0.1rem 0;
+            padding: 0.9rem;
+            background: rgba(0, 0, 0, 0.4);
+            /*border-radius: 12px;
+            border: 1px solid rgba(75, 0, 130, 0.3); */
+            transition: transform 0.2s ease;
+            
+            overflow: hidden;           /* Скрывает выпадающий контент */
+            width: 100%;                /* Фиксированная ширина */
+
+        }
+        
+        .comment-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .comment-author {
+            color: var(--dark-purple);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1em;
+        }
+        
+.comment-text {
+    margin: 0;
+    white-space: pre-line;
+    /* Учитывает \n в тексте */
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    max-width: 100%;
+    color: var(--text-color);
+}
+
+
+
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2em;
+            margin: 2rem 0;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--dark-purple);
+            margin: 10px auto 0;
+        }
+.raw-comment {
+    white-space: pre-wrap; /* Разрешает переносы */
+    word-break: break-word;
+    font-family: inherit; /* Убирает моноширинный шрифт */
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 8px;
+    background: transparent;
+}
+
+
+.add-comment-button {
+    display: block;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--dark-purple); /* Используем CSS-переменную */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1000; /* Поверх других элементов */
+}
+.add-comment-button:hower{
+    color: var(--dark-blue);
+}
+    </style>
+</head>
+<body>
+    <!-- Переключатель вверху -->
+    <div class="switch-container">
+        <ul class="tab-switcher">
+            <li>
+                <a href="index.html" class="tab-link">Главная</a>
+            </li>
+            <li class="active" style="background: var(--dark-purple);">
+                <span>Обсуждение</span>
+            </li>
+            <li>
+                <a href="top.html" class="tab-link">Топ</a>
+            </li>
+        </ul>
+    </div>
+
+    <section class="comments-container">
+        <div id="comments-list"></div>
+    </section>
+
+    <button class="add-comment-button" onclick="window.location.href='add-comment.html'">
+        Добавить комментарий
+    </button>
+
+<script>
+
+const BIN_ID = '681c702f8960c979a5957184';
+const API_KEY = '$2a$10$pxgfFBMbxl4gCPRoudGqw.PQf4zWzVfxkSWG2Ab.p0rBGKwRuGDWS';
+
+async function loadComments() {
+    try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+            headers: { 'X-Master-Key': API_KEY }
+        });
+
+        const data = await response.json();
+        console.log('Полученные данные:', data); // Для отладки
+
+        if(data?.record && Array.isArray(data.record)) {
+            renderComments(data.record);
+        } else {
+            console.error('Ожидался массив строк:', data);
+            alert('Сервер вернул некорректные данные 😟');
+        }
+
+    } catch (error) {
+        console.error('Ошибка загрузки:', error);
+        alert('Проверь интернет-соединение');
+    }
+}
+
+function renderComments(comments) {
+    const container = document.getElementById('comments-list');
+    if (!container) return;
+
+    const reversedComments = [...comments].reverse();
+
+    container.innerHTML = reversedComments.map((comment, index) => `
+        <div class="comment-item">
+            <pre class="raw-comment">${typeof comment === 'string' ? comment : 'Некорректный формат'}</pre>
+            ${index !== reversedComments.length - 1 ? '<hr class="divider-line">' : ''}
+        </div>
+    `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', loadComments);
+</script>
+
+</body>
+</html>
+
