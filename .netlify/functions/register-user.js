@@ -2,6 +2,9 @@ const crypto = require('crypto');
 
 
 exports.handler = async (event) => {
+    console.log('--- FUNCTION STARTED ---');
+    console.log('HTTP Method:', event.httpMethod);
+    console.log('Event body:', event.body);
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
