@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const fetch = require('node-fetch');
+
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
