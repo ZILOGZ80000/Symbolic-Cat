@@ -20,7 +20,7 @@ exports.handler = async (event) => {
         const authToken = event.headers['auth'];
         const AUTH_KEY = process.env.AUTH_KEY;
         
-        if (authToken !== `Basic ${AUTH_KEY}`) {
+        if (authToken !== AUTH_KEY) {
             return {
                 statusCode: 401,
                 headers,
@@ -71,7 +71,7 @@ exports.handler = async (event) => {
                 headers,
                 body: JSON.stringify({ 
                     error: 'Ошибка сервера',
-                    message: 'Сервер сломался на нашей стороне :)' 
+                    message: 'Сервер сломался на нашей стороне :(' 
                 })
             };
         }
@@ -148,7 +148,7 @@ exports.handler = async (event) => {
                 headers,
                 body: JSON.stringify({
                     error: 'Ошибка сохранения',
-                    message: 'Не удалось сохранить твои данные '
+                    message: 'Не удалось сохранить твои данные :('
                 })
             };
         }
@@ -159,7 +159,7 @@ exports.handler = async (event) => {
             headers,
             body: JSON.stringify({
                 success: true,
-                message: `Ты зарегистрирован!`,
+                message: `Ты зарегистрирован! :`,
                 user: {
                     username,
                     email
