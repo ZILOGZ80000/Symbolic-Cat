@@ -12,14 +12,29 @@ exports.handler = async (event) => {
             return {
                 statusCode: 405,
                 headers,
-                body: JSON.stringify({ error: 'Method Not Allowed' })
+                body: JSON.stringify({ error: 'Недопустимый метод читак тупой' })
+            };
+        }
+
+        // Проверка AUTH_KEY
+        const authToken = event.headers['auth'];
+        const AUTH_KEY = process.env.AUTH_KEY;
+        
+        if (authToken !== `Basic ${AUTH_KEY}`) {
+            return {
+                statusCode: 401,
+                headers,
+                body: JSON.stringify({
+                    error: 'Доступ запрещен',
+                    message: '🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕'
+                })
             };
         }
 
         // Парсим данные
         const data = JSON.parse(event.body);
-        const username = data.username;
-        const email = data.email;
+        const username = data.username?.trim();
+        const email = data.email?.trim();
         const password = data.password;
 
         // Проверка обязательных полей
@@ -28,66 +43,59 @@ exports.handler = async (event) => {
                 statusCode: 400,
                 headers,
                 body: JSON.stringify({ 
-                    error: 'Validation Error',
-                    message: 'Username and password are required'
+                    error: 'Ошибка данных',
+                    message: 'Имя и пароль обязательны!'
+                })
+            };
+        }
+
+        // Проверка наличия спец. символов в имени
+        if (/[:;=@\s]/.test(username)) {
+            return {
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({ 
+                    error: 'Неверное имя',
+                    message: 'Твоё имя похоже на.. хм... инъекцию?'
                 })
             };
         }
 
         // Проверка переменных среды
-        const gistId = process.env.GIST_ID;
-        const gistToken = process.env.GIST_TOKEN;
+        const DB_URL = process.env.DB_URL;
+        const DB_KEY = process.env.DB_KEY;
 
-        if (!gistId || !gistToken) {
+        if (!DB_URL || !DB_KEY) {
             return {
                 statusCode: 500,
                 headers,
                 body: JSON.stringify({ 
-                    error: 'Server Configuration',
-                    message: 'Missing GitHub credentials in environment' 
+                    error: 'Ошибка сервера',
+                    message: 'Сервер сломался на нашей стороне :)' 
                 })
             };
         }
 
-        // Получаем Gist
-        const apiUrl = `https://api.github.com/gists/${gistId}`;
-        const gistResponse = await fetch(apiUrl, {
-            headers: {
-                'Authorization': `token ${gistToken}`,
-                'User-Agent': 'Symbolic-Cat-App'
-            }
+        // Получаем текущих пользователей из базы
+        const getResponse = await fetch(`${DB_URL}/users`, {
+            method: 'GET',
+            headers: { 'token': DB_KEY }
         });
 
-        // Обработка ошибок Gist
-        if (!gistResponse.ok) {
+        // Обработка ошибок получения данных
+        if (!getResponse.ok) {
             return {
-                statusCode: gistResponse.status,
+                statusCode: 502,
                 headers,
                 body: JSON.stringify({
-                    error: 'GitHub API Error',
-                    message: `GitHub API responded with ${gistResponse.status}`
+                    error: 'Ошибка базы данных',
+                    message: 'База данных не отвечает, попробуй позже'
                 })
             };
         }
 
-        // Парсим Gist данные - теперь ожидаем объект!
-        const gistData = await gistResponse.json();
-        const targetFile = gistData.files['users.json'];
-        
-        // Проверка наличия файла и контента
-        if (!targetFile || !targetFile.content) {
-            return {
-                statusCode: 500,
-                headers,
-                body: JSON.stringify({
-                    error: 'Database Error',
-                    message: 'Invalid Gist structure'
-                })
-            };
-        }
-
-        // Преобразуем данные в объект
-        const usersDB = JSON.parse(targetFile.content);
+        // Парсим данные пользователей
+        const usersDB = await getResponse.json();
         
         // Проверка существующего пользователя
         if (usersDB[username]) {
@@ -95,52 +103,45 @@ exports.handler = async (event) => {
                 statusCode: 409,
                 headers,
                 body: JSON.stringify({
-                    error: 'Username Taken',
-                    message: 'This username is already taken'
+                    error: 'Имя занято',
+                    message: 'Такой пользователь уже существует!'
                 })
             };
         }
 
-        // Добавляем нового пользователя (в формате объекта)
-        // Хеширование пароля с солью
+        // Хеширование пароля
         const salt = crypto.randomBytes(16).toString('hex');
         const passwordHash = crypto.createHash('sha256')
-          .update(password + salt)
-          .digest('hex');
-        const saltedHash = salt + '.' + passwordHash;
+            .update(password + salt)
+            .digest('hex');
+        
+        // Создаем нового пользователя
         usersDB[username] = {
             email: email || '',
-            password: saltedHash, 
+            password: salt + '.' + passwordHash, 
             createdAt: new Date().toISOString(),
             lastLogin: null,
             settings: {}
         };
 
-        // Обновляем Gist
-        const updateResponse = await fetch(apiUrl, {
-            method: 'PATCH',
+        // Обновляем базу данных
+        const updateResponse = await fetch(`${DB_URL}/users`, {
+            method: 'POST',
             headers: {
-                'Authorization': `token ${gistToken}`,
-                'User-Agent': 'Symbolic-Cat-App',
+                'token': DB_KEY,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                files: {
-                    'users.json': {
-                        content: JSON.stringify(usersDB, null, 2)
-                    }
-                }
-            })
+            body: JSON.stringify(usersDB)
         });
 
         // Проверка обновления
         if (!updateResponse.ok) {
             return {
-                statusCode: updateResponse.status,
+                statusCode: 502,
                 headers,
                 body: JSON.stringify({
-                    error: 'Database Update Error',
-                    message: 'Failed to save user data'
+                    error: 'Ошибка сохранения',
+                    message: 'Не удалось сохранить твои данные '
                 })
             };
         }
@@ -151,7 +152,7 @@ exports.handler = async (event) => {
             headers,
             body: JSON.stringify({
                 success: true,
-                message: `User ${username} registered successfully`,
+                message: `Ты зарегистрирован!`,
                 user: {
                     username,
                     email
@@ -160,14 +161,14 @@ exports.handler = async (event) => {
         };
 
     } catch (error) {
-        console.error('Server error:', error);
+        console.error('Ошибка сервера:', error);
         return {
             statusCode: 500,
             headers,
             body: JSON.stringify({
-                error: 'Internal Server Error',
-                message: error.message,
-                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+                error: 'Ошибка сервера',
+                message: 'Что-то пошло не так',
+                ...(process.env.NODE_ENV === 'development' && { debug: error.message })
             })
         };
     }
