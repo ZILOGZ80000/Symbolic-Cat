@@ -117,11 +117,18 @@ exports.handler = async (event) => {
         
         // Создаем нового пользователя
         usersDB[username] = {
-            email: email || '',
+            email: email || null,
             password: salt + '.' + passwordHash, 
-            createdAt: new Date().toISOString(),
-            lastLogin: null,
-            settings: {}
+            created: new Date().toISOString(),
+            fish :0,
+            level:0,
+            type: "user",
+            icon: "awatar.json",
+            clan: null,
+            shops: {},
+            fridens: {},
+            achievements: [],
+            inactive_promocodes: []
         };
 
         // Обновляем базу данных
