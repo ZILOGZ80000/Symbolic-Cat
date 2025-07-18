@@ -56,7 +56,7 @@ exports.handler = async (event) => {
     const passwordHash = await bcrypt.hash(password, 10);
     const authToken = jwt.sign(
       { username },
-      process.env.JWT_SECRET, // Просто передаем строку
+      process.env.JWT_SECRET.trim(),
       { expiresIn: '1h' }
     );
                   
