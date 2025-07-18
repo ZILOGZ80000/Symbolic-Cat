@@ -157,7 +157,21 @@
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
         }
+        // Функция для получения CSRF токена
+        function getCSRFToken() {
+            const cookieValue = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('csrf_token='))
+                ?.split('=')[1];
+            return cookieValue ? decodeURIComponent(cookieValue) : '';
+        }
 
+        // Генерируем CSRF токен при загрузке страницы
+        if (!getCSRFToken()) {
+            const randomToken = crypto.getRandomValues(new Uint8Array(32))
+            .reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
+            document.cookie = `csrf_token=${encodeURIComponent(randomToken)}; Path=/; SameSite=Strict; Secure`;
+        }
         async function registerUser(username, email, password) {
             messageDiv.textContent = 'Регистрация...';
             messageDiv.className = 'message';
@@ -166,7 +180,8 @@
                 const response = await fetch('/.netlify/functions/register-user', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
                     },
                     body: JSON.stringify({ username, email, password })
                 });
@@ -183,7 +198,7 @@
                 } else{
                     messageDiv.textContent = `🚨 ${result.message || 'Ошибка регистрации.'}`;
                     messageDiv.className = 'message error';
-                    console.log(result.details)
+                    console.log(result.error)
                 }
 
             } catch (error) {
