@@ -58,7 +58,7 @@ exports.handler = async (event) => {
     // Генерируем JWT-токен
     const authToken = jwt.sign(
       { username },
-      Buffer.from(process.env.JWT_SECRET, 'hex'),
+      Buffer.from(process.env.JWT_SECRET, 'utf8'),
       { expiresIn: '1h' }
     );
 
