@@ -1,3 +1,5 @@
+console.log("JWT_SECRET:", JSON.stringify(process.env.JWT_SECRET));
+console.log("Secret type:", typeof process.env.JWT_SECRET);
 // functions/register-user.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
