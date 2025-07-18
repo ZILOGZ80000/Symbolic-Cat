@@ -175,7 +175,7 @@
         async function registerUser(username, email, password) {
             messageDiv.textContent = 'Регистрация...';
             messageDiv.className = 'message';
-
+            const csrfToken = getCSRFToken()
             try {
                 const response = await fetch('/.netlify/functions/register-user', {
                     method: 'POST',
