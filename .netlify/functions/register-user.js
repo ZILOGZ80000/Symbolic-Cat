@@ -166,7 +166,7 @@ exports.handler = async (event) => {
       headers,
       body: JSON.stringify({
         error: 'Ошибка сервера',
-        errror: error,
+        errror: error.message,
         message: 'Что-то пошло не так ;-;'
       })
     };
