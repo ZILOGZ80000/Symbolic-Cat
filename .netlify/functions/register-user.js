@@ -41,7 +41,7 @@ exports.handler = async (event) => {
     }
 
     // Парсим данные
-    const { username, password } = JSON.parse(event.body);
+    const { username, password, email } = JSON.parse(event.body);
     
     // Валидация
     if (!username || !password) {
@@ -112,7 +112,7 @@ exports.handler = async (event) => {
         // Создаем нового пользователя
         usersDB[username] = {
             email: email || null,
-            password: salt + '.' + passwordHash, 
+            password: passwordHash, 
             created: new Date().toISOString(),
             fish :0,
             level:0,
