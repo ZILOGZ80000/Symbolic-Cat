@@ -54,22 +54,13 @@ exports.handler = async (event) => {
 
     // Хешируем пароль
     const passwordHash = await bcrypt.hash(password, 10);
-    // Проверка формата секрета
-    const isValidHex = /^[0-9a-f]{64}$/.test(process.env.JWT_SECRET);
-
-    // Создание буфера с правильной кодировкой
-    const jwtSecret = isValidHex 
-     ? Buffer.from(process.env.JWT_SECRET, 'hex')
-     : Buffer.from(process.env.JWT_SECRET, 'utf8');
-
-     // Генерация токена
-     const authToken = jwt.sign(
-     { username }, 
-     jwtSecret,
-     { expiresIn: '1h' }
-   );
+    const authToken = jwt.sign(
+      { username },
+      process.env.JWT_SECRET, // Просто передаем строку
+      { expiresIn: '1h' }
+    );
                   
-       // Проверка переменных среды
+        // Проверка переменных среды
         const DB_URL = process.env.DB_URL;
         const DB_KEY = process.env.DB_KEY;
 
