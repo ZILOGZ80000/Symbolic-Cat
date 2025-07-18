@@ -14,7 +14,7 @@ const parseCookies = (headers) => {
 exports.handler = async (event) => {
   const headers = {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': 'https://your-site.netlify.app', // Замените на свой домен
+    'Access-Control-Allow-Origin': 'https://symbolic-cat.netlify.app', 
     'Access-Control-Allow-Credentials': 'true'
   };
 
