@@ -1,67 +1,68 @@
-const crypto = require('crypto');
+// functions/register-user.js
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+// Парсим куки из запроса
+const parseCookies = (headers) => {
+  return headers.cookie?.split(';').reduce((acc, cookie) => {
+    const [key, value] = cookie.trim().split('=');
+    acc[key] = value;
+    return acc;
+  }, {}) || {};
+};
 
 exports.handler = async (event) => {
-    const headers = {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-    };
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': 'https://your-site.netlify.app', // Замените на свой домен
+    'Access-Control-Allow-Credentials': 'true'
+  };
 
-    try {
-        // Проверка метода
-        if (event.httpMethod !== 'POST') {
-            return {
-                statusCode: 405,
-                headers,
-                body: JSON.stringify({ error: 'Недопустимый метод читак тупой' })
-            };
-        }
+  try {
+    // Проверяем CSRF-токен
+    const csrfToken = event.headers['x-csrf-token'];
+    const cookies = parseCookies(event.headers);
+    
+    if (csrfToken !== cookies.csrf_token) {
+      return {
+        statusCode: 403,
+        headers,
+        body: JSON.stringify({ error: 'CSRF-токен невалиден 🚨' })
+      };
+    }
 
-        // Проверка AUTH_KEY
-        const authToken = event.headers['auth'];
-        const AUTH_KEY = process.env.AUTH_KEY;
-        
-        if (authToken !== AUTH_KEY) {
-            return {
-                statusCode: 401,
-                headers,
-                body: JSON.stringify({
-                    error: 'Доступ запрещен',
-                    message: '🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕🖕'
-                })
-            };
-        }
+    // Запрещаем запросы не-POST
+    if (event.httpMethod !== 'POST') {
+      return {
+        statusCode: 405,
+        headers,
+        body: JSON.stringify({ error: 'ты кто такой иди нах' })
+      };
+    }
 
-        // Парсим данные
-        const data = JSON.parse(event.body);
-        const username = data.username?.trim();
-        const email = data.email?.trim();
-        const password = data.password;
+    // Парсим данные
+    const { username, password } = JSON.parse(event.body);
+    
+    // Валидация
+    if (!username || !password) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Логин и пароль обязательны!' })
+      };
+    }
 
-        // Проверка обязательных полей
-        if (!username || !password) {
-            return {
-                statusCode: 400,
-                headers,
-                body: JSON.stringify({ 
-                    error: 'Ошибка данных',
-                    message: 'Имя и пароль обязательны!'
-                })
-            };
-        }
+    // Хешируем пароль
+    const passwordHash = await bcrypt.hash(password, 10);
+    
+    // Генерируем JWT-токен
+    const authToken = jwt.sign(
+      { username },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-        // Проверка наличия спец. символов в имени
-        if (/[:;=@\s]/.test(username)) {
-            return {
-                statusCode: 400,
-                headers,
-                body: JSON.stringify({ 
-                    error: 'Неверное имя',
-                    message: 'Твоё имя похоже на.. хм... инъекцию?'
-                })
-            };
-        }
-
-        // Проверка переменных среды
+       // Проверка переменных среды
         const DB_URL = process.env.DB_URL;
         const DB_KEY = process.env.DB_KEY;
 
@@ -107,14 +108,7 @@ exports.handler = async (event) => {
                     message: 'Такой пользователь уже существует!'
                 })
             };
-        }
-
-        // Хеширование пароля
-        const salt = crypto.randomBytes(16).toString('hex');
-        const passwordHash = crypto.createHash('sha256')
-            .update(password + salt)
-            .digest('hex');
-        
+        } 
         // Создаем нового пользователя
         usersDB[username] = {
             email: email || null,
@@ -153,30 +147,27 @@ exports.handler = async (event) => {
             };
         }
 
-        // Успешный ответ
-        return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({
-                success: true,
-                message: `Ты зарегистрирован! :`,
-                user: {
-                    username,
-                    email
-                }
-            })
-        };
 
-    } catch (error) {
-        console.error('Ошибка сервера:', error);
-        return {
-            statusCode: 500,
-            headers,
-            body: JSON.stringify({
-                error: 'Ошибка сервера',
-                message: 'Что-то пошло не так',
-                ...(process.env.NODE_ENV === 'development' && { debug: error.message })
-            })
-        };
-    }
+    // Отправляем токен в куках
+    headers['Set-Cookie'] = `auth=${authToken}; Path=/; SameSite=Strict; HttpOnly; Secure; Max-Age=3600`;
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        message: `Ты зарегистрирован! :3`,
+        username
+      })
+    };
+
+  } catch (error) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        error: 'Ошибка сервера',
+        message: 'Что-то пошло не так ;-;'
+      })
+    };
+  }
 };
