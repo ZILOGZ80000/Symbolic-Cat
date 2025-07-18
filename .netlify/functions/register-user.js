@@ -1,8 +1,6 @@
-// functions/register-user.js
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-// Парсим куки из заголовков
 const parseCookies = (headers) => {
   return headers.cookie?.split(';').reduce((acc, cookie) => {
     const [key, value] = cookie.trim().split('=');
@@ -19,107 +17,85 @@ exports.handler = async (event) => {
   };
 
   try {
-    // ======= 1. CSRF-проверка =======
+    // ===== 0. Жёстко логируем входные данные =====
+    console.log("Event:", JSON.stringify({
+      method: event.httpMethod,
+      headers: event.headers,
+      body: event.body
+    }, null, 2));
+
+    // ===== 1. Проверка CSRF =====
     const csrfToken = event.headers['x-csrf-token'];
     const cookies = parseCookies(event.headers);
     
     if (!csrfToken || csrfToken !== cookies.csrf_token) {
-      return {
-        statusCode: 403,
-        headers,
-        body: JSON.stringify({ error: 'Ошибка безопасности CSRF' })
-      };
+      throw new Error('CSRF_ERROR: Не совпадают токены');
     }
 
-    // ======= 2. Проверка метода =======
-    if (event.httpMethod !== 'POST') {
-      return {
-        statusCode: 405,
-        headers,
-        body: JSON.stringify({ error: 'Разрешены только POST-запросы' })
-      };
+    // ===== 2. Обрабатываем пустой body =====
+    if (!event.body) {
+      throw new Error('EMPTY_BODY: Тело запроса пустое');
     }
-
-    // ======= 3. Парсинг данных =======
-    const { username, password, email } = JSON.parse(event.body);
     
-    // ======= 4. Валидация =======
-    if (!username || !password) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Логин и пароль обязательны!' })
-      };
+    const body = JSON.parse(event.body);
+    const { username, password, email } = body;
+
+    // ===== 3. Проверка обязательных полей =====
+    if (!username?.trim() || !password?.trim()) {
+      throw new Error('VALIDATION: Логин/пароль обязательны');
     }
 
-    // ======= 5. Хеширование пароля =======
-    const passwordHash = await bcrypt.hash(password, 10);
+    console.log("Начало регистрации для:", username);
 
-    // ======= 6. Проверка переменных окружения =======
+    // ===== 4. Проверка переменных среды =====
     if (!process.env.DB_URL || !process.env.DB_KEY) {
-      throw new Error('Ошибка конфигурации базы данных');
+      throw new Error('CONFIG: DB_URL/DB_KEY не настроены');
     }
 
-    // ======= 7. Получение существующих пользователей =======
+    // ===== 5. Запрос к базе =====
     const getResponse = await fetch(`${process.env.DB_URL}/users`, {
-      method: 'GET',
       headers: { 'token': process.env.DB_KEY }
     });
     
     if (!getResponse.ok) {
-      return {
-        statusCode: 502,
-        headers,
-        body: JSON.stringify({ error: 'Ошибка подключения к базе' })
-      };
+      throw new Error(`DB_FAIL: ${getResponse.status} ${await getResponse.text()}`);
     }
 
     const usersDB = await getResponse.json();
 
-    // ======= 8. Проверка существующего пользователя =======
+    console.log("Текущие пользователи в БД:", Object.keys(usersDB));
+
+    // ===== 6. Проверка существования =====
     if (usersDB[username]) {
-      return {
-        statusCode: 409,
-        headers,
-        body: JSON.stringify({ error: 'Пользователь уже существует!' })
-      };
+      throw new Error('USER_EXISTS: Пользователь уже зарегистрирован');
     }
 
-    // ======= 9. Создание нового пользователя =======
+    // ===== 7. Создание пользователя =====
+    const passwordHash = await bcrypt.hash(password, 10);
+    const sessionId = uuidv4();
+    const expiresAt = new Date(Date.now() + 3600 * 1000);
+
     usersDB[username] = {
-      // Основные данные
       email: email || null,
       password: passwordHash,
       created: new Date().toISOString(),
-      
-      // Игровые характеристики
       fish: 0,
       level: 0,
       type: "user",
       icon: "awatar.json",
       clan: null,
-      
-      // Системные данные
-      shops: {},         // Пример: { "shop1": true, "shop2": false }
-      friends: {},       // Пример: { "user2": "pending", "user3": "accepted" }
-      achievements: [],  // Пример: ["first_win", "collector"]
-      inactive_promocodes: [], // Пример: ["SUMMER2024", "WINTERSALE"]
-      
-      // Сессии
-      sessions: []
+      shops: {},
+      friends: {},
+      achievements: [],
+      inactive_promocodes: [],
+      sessions: [{
+        id: sessionId,
+        expires: expiresAt.toISOString(),
+        created: new Date().toISOString()
+      }]
     };
 
-    // ======= 10. Генерация сессии =======
-    const sessionId = uuidv4();
-    const expiresAt = new Date(Date.now() + 3600 * 1000); // 1 час
-    
-    usersDB[username].sessions.push({
-      id: sessionId,
-      expires: expiresAt.toISOString(),
-      created: new Date().toISOString()
-    });
-
-    // ======= 11. Сохранение в базу =======
+    // ===== 8. Сохранение =====
     const updateResponse = await fetch(`${process.env.DB_URL}/users`, {
       method: 'POST',
       headers: {
@@ -129,30 +105,23 @@ exports.handler = async (event) => {
       body: JSON.stringify(usersDB)
     });
 
+    console.log("Статус обновления БД:", updateResponse.status);
+
     if (!updateResponse.ok) {
-      throw new Error('Ошибка сохранения данных');
+      throw new Error(`DB_UPDATE_FAIL: ${await updateResponse.text()}`);
     }
 
-    // ======= 12. Установка кук =======
-    const cookieOptions = [
-      `Path=/`,
-      `Secure`,
-      `SameSite=Strict`,
-      `HttpOnly`,
-      `Max-Age=3600`
-    ].join('; ');
-
+    // ===== 9. Ставим куки =====
     headers['Set-Cookie'] = [
-      `session=${sessionId}; ${cookieOptions}`,
-      `username=${encodeURIComponent(username)}; ${cookieOptions.replace('HttpOnly', '')}`
-    ].join(', ');
+      `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly; Max-Age=3600`,
+      `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=3600`
+    ];
 
-    // ======= 13. Успешный ответ =======
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        message: 'Регистрация успешна! 😺',
+        success: true,
         username,
         fish: 0,
         level: 0
@@ -160,14 +129,13 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    // ======= 14. Обработка ошибок =======
-    console.error('Ошибка:', error);
+    console.error("СЕРВЕРНАЯ ОШИБКА:", error);
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({
-        error: 'Критическая ошибка',
-        details: error.message,
+        error: error.message.split(':')[0] || 'UNKNOWN_ERROR',
+        message: error.message.split(':').slice(1).join(':').trim() || 'Неизвестная ошибка',
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       })
     };
