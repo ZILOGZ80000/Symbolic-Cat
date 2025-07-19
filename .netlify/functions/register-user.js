@@ -103,7 +103,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify(usersDB)
     });
-
+    console.log("Ответ от базы:", await updateResponse.text());
     console.log("Статус обновления БД:", updateResponse.status);
 
     if (!updateResponse.ok) {
