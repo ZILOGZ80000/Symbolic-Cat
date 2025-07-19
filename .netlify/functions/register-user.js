@@ -134,7 +134,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       headers,
       body: JSON.stringify({
-        error: error.message.split(':')[0] || 'UNKNOWN_ERROR',
+        error: error.message || 'UNKNOWN_ERROR',
         message: error.message.split(':').slice(1).join(':').trim() || 'Неизвестная ошибка',
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       })
