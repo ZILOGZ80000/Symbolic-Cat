@@ -76,25 +76,24 @@ exports.handler = async (event) => {
     const expiresAt = new Date(Date.now() + 3600 * 1000);
 
     usersDB[username] = {
-      email: email || null,
-      password: passwordHash,
-      created: new Date().toISOString(),
-      fish: 0,
-      level: 0,
-      type: "user",
-      icon: "awatar.json",
-      clan: null,
-      shops: {},
-      friends: {},
-      achievements: [],
-      inactive_promocodes: [],
-      sessions: [{
-        id: sessionId,
-        expires: expiresAt.toISOString(),
-        created: new Date().toISOString()
-      }]
-    };
-
+  email: email || null,
+  password: passwordHash,
+  created: new Date().toISOString(),
+  fish: 0,
+  level: 0,
+  type: "user",
+  icon: "awatar.json",
+  clan: null,
+  shops: {},
+  friends: {},
+  achievements: [],
+  inactive_promocodes: [],
+  sessions: [{
+    id: sessionId,
+    expires: expiresAt.toISOString(), 
+    created: new Date().toISOString()
+  }] 
+}; 
     // ===== 8. Сохранение =====
     const updateResponse = await fetch(`${process.env.DB_URL}/users`, {
       method: 'POST',
