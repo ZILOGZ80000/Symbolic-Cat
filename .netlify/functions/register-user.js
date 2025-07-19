@@ -122,6 +122,7 @@ exports.handler = async (event) => {
       headers,
       body: JSON.stringify({
         success: true,
+        message: "Ты зарегистрирован :3"
         username,
         fish: 0,
         level: 0
