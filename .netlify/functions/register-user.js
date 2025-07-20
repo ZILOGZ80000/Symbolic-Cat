@@ -25,7 +25,8 @@ exports.handler = async (event) => {
     }, null, 2));
 
     // ===== 1. Проверка CSRF =====
-    const csrfToken = event.headers['x-csrf-token'];
+    const csrfToken = event.headers['X-CSRF-Token'];
+    console.log(csrfToken)
     const cookies = parseCookies(event.headers);
     
     if (!csrfToken || csrfToken !== cookies.csrf_token) {
