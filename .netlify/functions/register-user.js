@@ -32,8 +32,9 @@ exports.handler = async (event) => {
     console.log("CSRF Header:", csrfHeader);
     console.log("CSRF Cookie:", csrfCookie);
     console.log("All cookies:", cookies);
-    
-    if (!csrfToken || csrfToken !== cookies.csrf_token) {
+
+
+    if (!csrfHeader || !csrfCookie || csrfHeader !== csrfCookie) {
       throw new Error('CSRF_ERROR: Не совпадают токены');
     }
 
