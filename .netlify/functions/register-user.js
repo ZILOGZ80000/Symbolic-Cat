@@ -35,12 +35,12 @@ exports.handler = async (event) => {
 
 
     if (!csrfHeader || !csrfCookie || csrfHeader !== csrfCookie) {
-      throw new Error('CSRF_ERROR: Не совпадают токены');
+      throw new Error('CSRF_ERROR: Ой чет все сломалось пиши в t.me/humans_i_am_not_human');
     }
 
     // ===== 2. Обрабатываем пустой body =====
     if (!event.body) {
-      throw new Error('EMPTY_BODY: Тело запроса пустое');
+      throw new Error('EMPTY_BODY: Ой чет все сломалось пиши в t.me/humans_i_am_not_human');
     }
     
     const body = JSON.parse(event.body);
@@ -55,7 +55,7 @@ exports.handler = async (event) => {
 
     // ===== 4. Проверка переменных среды =====
     if (!process.env.DB_URL || !process.env.DB_KEY) {
-      throw new Error('CONFIG: DB_URL/DB_KEY не настроены');
+      throw new Error('CONFIG: Ой чет все сломалось пиши в t.me/humans_i_am_not_human');
     }
 
     // ===== 5. Запрос к базе =====
@@ -73,7 +73,7 @@ exports.handler = async (event) => {
 
     // ===== 6. Проверка существования =====
     if (usersDB[username]) {
-      throw new Error('USER_EXISTS: Пользователь уже зарегистрирован');
+      throw new Error('USER_EXISTS: Ник занят, попробуй другой');
     }
 
     // ===== 7. Создание пользователя =====
@@ -117,10 +117,7 @@ exports.handler = async (event) => {
     }
 
     // ===== 9. Ставим куки =====
-    headers['Set-Cookie'] = [
-      `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly; Max-Age=3600`,
-      `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=3600`
-    ];
+    headers['Set-Cookie'] = `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly; username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
 
     return {
       statusCode: 200,
