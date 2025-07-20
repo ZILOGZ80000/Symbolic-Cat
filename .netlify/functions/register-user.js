@@ -25,9 +25,13 @@ exports.handler = async (event) => {
     }, null, 2));
 
     // ===== 1. Проверка CSRF =====
-    const csrfToken = event.headers['X-CSRF-Token'];
-    console.log(csrfToken)
+    const csrfHeader = event.headers['x-csrf-token'] || event.headers['X-Csrf-Token'];
     const cookies = parseCookies(event.headers);
+    const csrfCookie = cookies.csrf_token || cookies.CSRF_TOKEN;
+
+    console.log("CSRF Header:", csrfHeader);
+    console.log("CSRF Cookie:", csrfCookie);
+    console.log("All cookies:", cookies);
     
     if (!csrfToken || csrfToken !== cookies.csrf_token) {
       throw new Error('CSRF_ERROR: Не совпадают токены');
