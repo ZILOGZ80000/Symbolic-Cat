@@ -6,7 +6,7 @@ exports.handler = async (event) => {
   };
 
   try {
-    const response = await fetch(${process.env.DB_URL}/chats, {
+    const response = await fetch(`${process.env.DB_URL}/chats`, {
       headers: { 'token': process.env.DB_KEY }
     });
 
