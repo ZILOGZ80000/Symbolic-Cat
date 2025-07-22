@@ -98,11 +98,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
             const currentData = await currentResponse.json();
+            console.log("до", currentData)
             const currentComments = currentData.record ? [...currentData.record] : [];
 
             // 2. Добавляем новый комментарий
             currentComments.push(`${nickname}: ${text}`);
-
+            console.log("после", currentComments)
             // 3. Отправляем ОБНОВЛЁННЫЙ массив
             await fetch(`.netlify/functions/add-comment`, {
                 method: 'POST',
