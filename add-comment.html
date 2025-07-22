@@ -84,18 +84,15 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const BIN_ID = '681c702f8960c979a5957184';
-    const API_KEY = '$2a$10$pxgfFBMbxl4gCPRoudGqw.PQf4zWzVfxkSWG2Ab.p0rBGKwRuGDWS';
     const nickname = localStorage.getItem('userNick');
 
     async function sendComment(text) {
         try {
             // 1. Получаем текущие комментарии
-            const currentResponse = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: { 'X-Master-Key': API_KEY }
+            const currentResponse = await fetch(`.netlify/functions/get-comments.js`, {
             });
 
-            // Обрабатываем случай, если bin ещё не создан
+
             const currentData = await currentResponse.json();
             const currentComments = currentData.record ? [...currentData.record] : [];
 
@@ -103,11 +100,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentComments.push(`${nickname}: ${text}`);
 
             // 3. Отправляем ОБНОВЛЁННЫЙ массив
-            await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+            await fetch(`.netlify/functions/add-comment.js`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Master-Key': API_KEY
                 },
                 body: JSON.stringify(currentComments)
             });
