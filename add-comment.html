@@ -104,8 +104,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentComments.push(`${nickname}: ${text}`);
 
             // 3. Отправляем ОБНОВЛЁННЫЙ массив
-            await fetch(`.netlify/functions/add-comment.js`, {
-                method: 'PUT',
+            await fetch(`.netlify/functions/add-comment`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
