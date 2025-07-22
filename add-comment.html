@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const currentData = await currentResponse.json();
             console.log("до", currentData)
-            currentComments = [...currentComments]; 
+            currentComments = [...currentData];
 
             // 2. Добавляем новый комментарий
             currentComments.push(`${nickname}: ${text}`);
