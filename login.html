@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в аккаунт</title>
+    <style>
+        /* Сохраняем стили из регистрации */
+        :root {
+            --dark-purple: #4b0082;
+            --dark-blue: #00008b;
+            --background-color: #000000;
+            --text-color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            border: 1px solid var(--dark-purple);
+            box-shadow: 0 0 15px rgba(75, 0, 130, 0.5);
+        }
+
+        h1 {
+            color: var(--dark-purple);
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--dark-blue);
+            color: var(--text-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--dark-purple);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--dark-purple);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+        }
+
+        .message {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+        .error {
+            color: #ff4444;
+        }
+        .success {
+            color: #00C851;
+        }
+
+        .register-link {
+            display: block;
+            margin-top: 1.5rem;
+            color: var(--dark-blue);
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .register-link:hover {
+            color: var(--dark-purple);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Вход в аккаунт</h1>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="username">Логин (ник):</label>
+            <input type="text" id="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" required>
+        </div>
+        <button type="submit">Войти</button>
+        <div id="message" class="message"></div>
+    </form>
+    <a href="sign-up.html" class="register-link">Ещё нет аккаунта? Зарегистрируйся!</a>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('message');
+        
+        // Обработка токенов CSRF
+        function getCSRFToken() {
+            return document.cookie
+                .split('; ')
+                .find(row => row.startsWith('csrf_token='))
+                ?.split('=')[1] || '';
+        }
+
+        if (!getCSRFToken()) {
+            const token = crypto.getRandomValues(new Uint8Array(32))
+                .reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
+            document.cookie = `csrf_token=${token}; Path=/; Secure; SameSite=Strict`;
+        }
+
+        loginForm.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Базовая проверка
+            if (username.length < 3) {
+                showMessage('Имя пользователя должно быть не менее 3 символов', 'error');
+                return;
+            }
+
+            try {
+                messageDiv.textContent = 'Вход...';
+                const response = await fetch('/.netlify/functions/login-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': getCSRFToken()
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage(data.message, 'success');
+                    localStorage.setItem('userNick', username);
+                    setTimeout(() => window.location.href = 'index.html', 1500);
+                } else {
+                    showMessage(data.message || 'Ошибка входа', 'error');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка сети. Попробуйте позже', 'error');
+            }
+        };
+
+        function showMessage(text, type = 'info') {
+            messageDiv.textContent = type === 'error' ? `🚨 ${text}` : `✅ ${text}`;
+            messageDiv.className = `message ${type}`;
+        }
+    });
+</script>
+</body>
+</html>
