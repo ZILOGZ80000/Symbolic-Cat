@@ -61,15 +61,18 @@
 </head>
 <body>
     <div class="container">
-        <h2>✍️ Новый комментарий</h2>
+        <h2>Новый комментарий</h2>
         <div class="nick-info" id="nickInfo"></div>
 
         <form id="commentForm">
-            <div id="nickContainer">
-                <input type="text" 
+        <div id="nickContainer">
+            <h4>Твой ник: <span  id="nick"></span>
+                <!--<input type="text" 
                        id="nickname" 
                        placeholder="Твой уникальный ник"
-                       required>
+                       required>-->
+            
+                
             </div>
 
             <textarea id="comment" 
@@ -85,11 +88,12 @@
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
     const nickname = localStorage.getItem('userNick');
+    document.getElementById("nick").text = nickname;
 
     async function sendComment(text) {
         try {
             // 1. Получаем текущие комментарии
-            const currentResponse = await fetch(`.netlify/functions/get-comments.js`, {
+            const currentResponse = await fetch(`.netlify/functions/get-comments`, {
             });
 
 
