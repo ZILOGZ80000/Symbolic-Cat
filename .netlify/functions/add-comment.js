@@ -9,7 +9,7 @@ exports.handler = async (event) => {
     // Парсим тело запроса (например, JSON с сообщением чата)
     const requestBody = JSON.parse(event.body);
 
-    const response = await fetch(${process.env.DB_URL}/chats, {
+    const response = await fetch(`${process.env.DB_URL}/chats`, {
       method: 'POST',
       headers: {
         'token': process.env.DB_KEY,
