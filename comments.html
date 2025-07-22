@@ -200,8 +200,7 @@
 
 async function loadComments() {
     try {
-        const response = await fetch(`.netlify/functions/get-comments.js`, {}
-        });
+        const response = await fetch(`.netlify/functions/get-comments.js`, {});
 
         const data = await response.json();
         console.log('Полученные данные:', data); // Для отладки
