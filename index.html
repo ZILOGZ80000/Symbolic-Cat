@@ -149,6 +149,7 @@
   /* Тень и анимация */
   box-shadow: 0 4px 15px rgba(75,0,130,0.3);
   transition: all 0.3s ease;
+  text-dekoration: none;
 }
 
 .login-btn:hover {
@@ -220,7 +221,7 @@
     </ul>
     <!--<button class="login-btn">войти </button>-->
   </div>
-  <button class="login-btn" id="loginButton">войти </button>
+  <button class="login-btn" id="loginButton" onclick="location.href = 'login'" >Войти</button>
   <!-- Конец переключателя -->
   <header>
     <img src="icon.png" alt="Game Icon" class="game-icon">
@@ -511,7 +512,7 @@ fetch('news.html')
         // Если ник есть, превращаем кнопку "Войти" в ссылку "Аккаунт"
         // Создаем новую ссылку (<a>) и копируем в неё стили и текст
         const accountLink = document.createElement('a');
-        accountLink.setAttribute('href', `account.html?user=${userNick}`);
+        accountLink.setAttribute('href', `/me/`);
         accountLink.textContent = 'Аккаунт';
         accountLink.className = 'login-btn'; // Применяем стили кнопки
 
@@ -522,7 +523,7 @@ fetch('news.html')
         // Если ника нет, убеждаемся, что кнопка "Войти" видна и её текст правильный
         // (на случай, если она была изменена каким-то другим скриптом или состоянием)
         loginButton.classList.remove('hidden'); // Убедимся, что не скрыта
-        loginButton.textContent = 'войти'; // Убедимся, что текст правильный
+        loginButton.textContent = 'Войти'; // Убедимся, что текст правильный
         loginButton.removeAttribute('href'); // Убираем href, если он мог быть
       }
     });
