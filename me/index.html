@@ -180,11 +180,18 @@
         window.location.href = '/login.html';
     }
 
-    // Проверка авторизации при загрузке
-    if(!document.cookie.includes('session') || !localStorage.getItem('userNick')) {
+    // Обновленная проверка авторизации
+    if(!getCookie('session') || !getCookie('username')) {
         window.location.href = '/login.html';
     } else {
         loadProfile();
+    // Заменяем проверку cookies
+    function getCookie(name) {
+        return document.cookie.split(';').reduce((acc, cookie) => {
+            const [key, val] = cookie.trim().split('=');
+            if(key === name) return decodeURIComponent(val);
+            return acc;
+        }, '');
     }
 </script>
 </body>
