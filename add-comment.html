@@ -102,7 +102,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentComments = [...currentData];
 
             // 2. Добавляем новый комментарий
-            currentComments.push(`${nickname}: ${text}`);
+            function escapeHtml(unsafe){
+              return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+            }
+            currentComments.push(`${nickname}: ${escapeHtml(text)}`);
             console.log("после", currentComments)
             // 3. Отправляем ОБНОВЛЁННЫЙ массив
             await fetch(`.netlify/functions/add-comment`, {
