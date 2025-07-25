@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function sendComment(text) {
         try {
-            // 1. Получаем текущие комментарии
+            /* // 1. Получаем текущие комментарии
             const currentResponse = await fetch(`.netlify/functions/get-comments`, {
             });
 
@@ -111,14 +111,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             .replace(/'/g, "&#039;");
             }
             currentComments.push(`${nickname}: ${escapeHtml(text)}`);
-            console.log("после", currentComments)
-            // 3. Отправляем ОБНОВЛЁННЫЙ массив
+            console.log("после", currentComments)*/
+            // 3. Отправляем коммент
             await fetch(`.netlify/functions/add-comment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(currentComments)
+                body: JSON.stringify({ text })
             });
 
             alert('✅ Комментарий добавлен!');
