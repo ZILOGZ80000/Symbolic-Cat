@@ -163,21 +163,7 @@ body {
                 }
                 throw new Error('Ошибка загрузки данных');
             }
-            
-            /*const userData =  { // для теста
-    "username":"ZILOG Z80",
-    "achievements": [],
-    "clan": null,
-    "created": "2025-07-20T17:56:08.038Z",
-    "email": null,
-    "fish": 0,
-    "friends": {},
-    "icon": "k.jpeg",
-    "inactive_promocodes": [],
-    "level": 0,
-    "password": "$2a$10$dl/BJ9PcXhz3N9lHZ..63.AY.6egimKpzsvnwwJeDvgDHZpKmw9uC",
-    "shops": {},
-    "type": "user"};*/
+            const userData = await response.json();
             
             // Заполняем данные
             document.getElementById('nickname').textContent = userData.username;
