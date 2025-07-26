@@ -10,7 +10,7 @@ const parseCookies = (headers) => {
 };
 
 exports.handler = async (event) => {
-  const multiValueHeaders = {
+  const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': 'https://symbolic-cat.netlify.app',
     'Access-Control-Allow-Credentials': 'true'
