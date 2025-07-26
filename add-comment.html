@@ -231,7 +231,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const nickname = document.cookie.username;
+        function getCookie(name) {
+        const cookies = document.cookie.split(';'); // Разделяем строку по '; '
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim(); // Убираем пробелы в начале/конце
+            // Ищем имя куки (например, "username=")
+            if (cookie.startsWith(name + '=')) {
+                // Возвращаем значение, декодируя его
+                return decodeURIComponent(cookie.substring(name.length + 1));
+              }
+          }
+        return ''; // Если кука не найдена
+     }
+
+    const userNick = getCookie('username');
+    console.log(userNick);
+
     document.getElementById("nick").text = nickname;
 
     async function sendComment(text) {
