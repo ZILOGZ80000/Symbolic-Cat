@@ -93,12 +93,12 @@ exports.handler = async (event) => {
   shops: {},
   friends: {},
   achievements: [],
-  inactive_promocodes: [],
-  sessions: [{
+  inactive_promocodes: []/*,
+/*  sessions: [{
     id: sessionId,
     expires: expiresAt.toISOString(), 
     created: new Date().toISOString()
-  }] 
+  }] */
 }; 
     // ===== 8. Сохранение =====
     const updateResponse = await fetch(`${process.env.DB_URL}/users`, {
@@ -117,7 +117,7 @@ exports.handler = async (event) => {
     }
 
     // ===== 9. Ставим куки =====
-    headers['Set-Cookie'] = `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly; username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
+    headers['Set-Cookie'] = `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict;`;
 
     return {
       statusCode: 200,
