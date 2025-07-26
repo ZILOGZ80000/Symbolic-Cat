@@ -17,10 +17,10 @@ exports.handler = async (event) => {
 
   try {
     const cookies = parseCookies(event.headers);
-    const sessionCookie = cookies.session;
+    //const sessionCookie = cookies.session;
     const username = cookies.username;
     
-    if (!sessionCookie || !username) {
+    if (/*!sessionCookie ||*/ !username) {
       throw new Error('UNAUTHORIZED: Требуется авторизация');
     }
 
