@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой профиль</title>
-    <style>
-        /* Сохраняем стили из предыдущих страниц */
-        :root {
-            --dark-purple: #4b0082;
-            --dark-blue: #00008b;
-            --background-color: #000000;
-            --text-color: #ffffff;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мой профиль</title>
+<style>
+/* Сохраняем стили из предыдущих страниц */
+:root {
+--dark-purple: #4b0082;
+--dark-blue: #00008b;
+--background-color: #000000;
+--text-color: #ffffff;
+}
 
-        body {
+body {
             margin: 0;
             background-color: var(--background-color);
             color: var(--text-color);
@@ -97,42 +97,57 @@
         .logout-button:hover {
             background-color: #6a0000;
         }
-    </style>
+.profile-row {
+   display: flex;
+   align-items: center;      /* вертикальное выравнивание */
+   gap: 1rem;                /* расстояние между авой и текстом */
+   margin-bottom: 1.5rem;    /* отступ снизу */
+}
+
+.avatar {
+   width: 100px;
+   height: 100px;
+   border-radius: 10px;
+   object-fit: cover;        /* чтобы не сплющивало */
+}
+
+</style>
 </head>
 <body>
-    <button class="edit-button" onclick="location.href='/me/edit.html'">✏️</button>
+
     
-    <div class="container">
-        <div class="profile-header">
-            <h1><span id="username"></span></h1>
-            <div class="info-value" id="userLevel">Уровень: <span id="levelValue">0</span></div>
-            <div class="info-value">Рыбок: <span id="fishValue">0</span></div>
-        </div>
+<div class="container">
+<button class="edit-button" onclick="location.href='/me/edit.html'">✏️</button>
+<div class="profile-row">
+  <img class="avatar" src="awatar.png" alt="Аватар">
+  <div>
+    <h1 class="nickname" id="nickname">...</h1>
+    <h2 class="meta">
+      <span id="type">...</span> • <span id="fish">...</span> >((('>)) • <span id="level">...</span> уровень
+    </h2>
+  </div>
+</div>
 
-        <div class="profile-info">
-            <div class="info-card">
-                <div class="info-label">Email</div>
-                <div class="info-value" id="userEmail">не указан</div>
-            </div>
-            
-            <div class="info-card">
-                <div class="info-label">Дата регистрации</div>
-                <div class="info-value" id="registerDate"></div>
-            </div>
-            
-            <div class="info-card">
-                <div class="info-label">Клан</div>
-                <div class="info-value" id="userClan">не состоял</div>
-            </div>
-            
-            <div class="info-card">
-                <div class="info-label">Достижения</div>
-                <div class="info-value" id="achievementsCount">0 получено</div>
-            </div>
-        </div>
 
-        <button class="logout-button" onclick="logout()">Выйти из аккаунта</button>
-    </div>
+<div class="profile-info">
+<div class="info-card">
+<div class="info-label">Email</div>
+<div class="info-value" id="userEmail">не указан</div>
+</div>
+            
+<div class="info-card">
+<div class="info-label">Дата регистрации</div>
+<div class="info-value" id="registerDate"></div>
+</div>
+            
+<div class="info-card">
+<div class="info-label">Достижения</div>
+<div class="info-value" id="achievementsCount">0 получено</div>
+</div>
+</div>
+
+<button class="logout-button" onclick="logout()">Выйти из аккаунта</button>
+</div>
 
 <script>
     async function loadProfile() {
@@ -149,17 +164,30 @@
                 throw new Error('Ошибка загрузки данных');
             }
             
-            const userData = await response.json();
+            /*const userData =  { // для теста
+    "username":"ZILOG Z80",
+    "achievements": [],
+    "clan": null,
+    "created": "2025-07-20T17:56:08.038Z",
+    "email": null,
+    "fish": 0,
+    "friends": {},
+    "icon": "k.jpeg",
+    "inactive_promocodes": [],
+    "level": 0,
+    "password": "$2a$10$dl/BJ9PcXhz3N9lHZ..63.AY.6egimKpzsvnwwJeDvgDHZpKmw9uC",
+    "shops": {},
+    "type": "user"};*/
             
             // Заполняем данные
-            document.getElementById('username').textContent = userData.username;
-            document.getElementById('levelValue').textContent = userData.level;
-            document.getElementById('fishValue').textContent = userData.fish;
-            document.getElementById('userEmail').textContent = userData.email || 'не указан';
-            document.getElementById('userClan').textContent = userData.clan || 'не состоял';
+            document.getElementById('nickname').textContent = userData.username;
+            document.getElementById('level').textContent = userData.level;
+            document.getElementById('fish').textContent = userData.fish;
+            document.getElementById('userEmail').textContent = userData.email || 'Не указан';
+            document.getElementById('userClan').textContent = userData.clan || 'Не состоит';
             document.getElementById('achievementsCount').textContent = 
                 `${userData.achievements?.length || 0} получено`;
-            
+            document.getElementById('type').textContent = userData.type;            
             // Форматируем дату
             if(userData.created) {
                 const date = new Date(userData.created);
@@ -180,11 +208,6 @@
         window.location.href = '/login.html';
     }
 
-    // Обновленная проверка авторизации
-    if(!getCookie('session') || !getCookie('username')) {
-        window.location.href = '/login.html';
-    } else {
-        loadProfile();
     // Заменяем проверку cookies
     function getCookie(name) {
         return document.cookie.split(';').reduce((acc, cookie) => {
