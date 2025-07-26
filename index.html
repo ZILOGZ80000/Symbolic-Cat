@@ -506,7 +506,8 @@ fetch('news.html')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
       const loginButton = document.getElementById('loginButton');
-      const userNick = localStorage.getItem('userNick');
+      const userNick = document.cookie.username;
+      console.log(userNick)
 
       if (userNick) {
         // Если ник есть, превращаем кнопку "Войти" в ссылку "Аккаунт"
