@@ -156,6 +156,10 @@ body {
 </div>
 
 <script>
+    function safeSetText(id, value, fallback = '') {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value ?? fallback;
+}
     async function loadProfile() {
         try {
             const response = await fetch('/.netlify/functions/get-me', {
@@ -173,13 +177,12 @@ body {
             
             // Заполняем данные
             document.getElementById('nickname').textContent = userData.username;
-            document.getElementById('level').textContent = userData.level;
-            document.getElementById('fish').textContent = userData.fish;
-            document.getElementById('userEmail').textContent = userData.email || 'Не указан';
-            document.getElementById('userClan').textContent = userData.clan || 'Не состоит';
-            document.getElementById('achievementsCount').textContent = 
-                `${userData.achievements?.length || 0} получено`;
-            document.getElementById('type').textContent = userData.type;            
+            safeSetText('nickname', userData.username);
+            safeSetText('level', userData.level);
+            safeSetText('fish', userData.fish);
+            safeSetText('userEmail', userData.email, 'Не указан');
+            safeSetText('type', userData.type);
+            safeSetText('achievementsCount', `${userData.achievements?.length || 0} получено`);          
             // Форматируем дату
             if(userData.created) {
                 const date = new Date(userData.created);
