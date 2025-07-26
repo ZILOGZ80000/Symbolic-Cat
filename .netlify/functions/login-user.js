@@ -84,7 +84,7 @@ exports.handler = async (event) => {
 
     // ставим куки
     headers['Set-Cookie'] = [
-      `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly; Max-Age=3600`,
+      `session=${sessionId}; Path=/; Secure; SameSite=Strict;  Max-Age=3600`,
       `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=3600`
     ].join(', ');
 
