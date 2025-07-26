@@ -87,7 +87,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers
+      headers,
       body: JSON.stringify({
         success: true,
         message: "Вход выполнен! :3",
