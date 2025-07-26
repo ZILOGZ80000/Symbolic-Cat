@@ -22,10 +22,11 @@ exports.handler = async (event) => {
   try {
     /* ---------- проверяем сессию ---------- */
     const cookies = parseCookies(event.headers || {});
-    const sessionId = cookies.session;
+    const currentUser = cookies;
+    /*const sessionId = cookies.session;
     if (!sessionId) {
       return { statusCode: 401, headers, body: JSON.stringify({ error: 'UNAUTHORIZED' }) };
-    }
+    }*/
 
     // получаем всех юзеров из БД
     const usersResp = await fetch(`${process.env.DB_URL}/users`, {
@@ -34,7 +35,7 @@ exports.handler = async (event) => {
     if (!usersResp.ok) throw new Error('users fetch failed');
     const usersDB = await usersResp.json();
 
-    // ищем владельца сессии
+    /* // ищем владельца сессии
     let currentUser = null;
     for (const [uname, user] of Object.entries(usersDB)) {
       if (user.sessions?.some(s => s.id === sessionId && new Date(s.expires) > new Date())) {
@@ -43,7 +44,7 @@ exports.handler = async (event) => {
       }
     }
     if (!currentUser)
-      return { statusCode: 401, headers, body: JSON.stringify({ error: 'SESSION_EXPIRED' }) };
+      return { statusCode: 401, headers, body: JSON.stringify({ error: 'SESSION_EXPIRED' }) };*/
 
     /* ---------- добавляем комментарий ---------- */
     const { text } = JSON.parse(event.body || '{}');
