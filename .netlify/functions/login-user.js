@@ -82,8 +82,10 @@ exports.handler = async (event) => {
     if (!updateResponse.ok) throw new Error(`DB_UPDATE_FAIL: ${await updateResponse.text()}`);
 
     // ставим куки
-    headers['Set-Cookie'] = 
-      `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly; Max-Age=3600;username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict;`;
+    headers['Set-Cookie'] = [
+      `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly; Max-Age=3600`,
+      `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=3600`
+    ];
 
     return {
       statusCode: 200,
