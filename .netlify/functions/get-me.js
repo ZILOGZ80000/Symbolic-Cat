@@ -41,11 +41,11 @@ exports.handler = async (event) => {
     
     if (!user) throw new Error('USER_NOT_FOUND: Пользователь не найден');
     
-    // Проверка сессии
+    /*// Проверка сессии
     const currentSession = user.sessions.find(s => s.id === sessionCookie);
     if (!currentSession || new Date(currentSession.expires) < new Date()) {
       throw new Error('SESSION_EXPIRED: Сессия истекла');
-    }
+    }*/
 
     // Формируем ответ
     const userData = {
