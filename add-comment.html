@@ -149,88 +149,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const nickname = document.cookie.username;
-    document.getElementById("nick").text = nickname;
-
-    async function sendComment(text) {
-        try {
-            /* // 1. Получаем текущие комментарии
-            const currentResponse = await fetch(`.netlify/functions/get-comments`, {
-            });
-
-
-            const currentData = await currentResponse.json();
-            console.log("до", currentData)
-            currentComments = [...currentData];
-
-            // 2. Добавляем новый комментарий
-            function escapeHtml(unsafe){
-              return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-            }
-            currentComments.push(`${nickname}: ${escapeHtml(text)}`);
-            console.log("после", currentComments)*/
-            // 3. Отправляем коммент
-            await fetch(`.netlify/functions/add-comment`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text })
-            });
-
-            alert('✅ Комментарий добавлен!');
-            window.location.href = 'index.html';
-
-        } catch (error) {
-            console.error('Ошибка:', error);
-            alert('🚨 Проверь консоль для деталей ошибки');
-        }
-    }
-
-    // Обработчик формы
-    document.getElementById('commentForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const commentText = document.getElementById('comment').value.trim();
-        if (commentText) sendComment(commentText);
-    });
-});
-</script>
-
-</body>
-</html>
-
-    <div class="container">
-        <h2>Новый комментарий</h2>
-        <div class="nick-info" id="nickInfo"></div>
-
-        <form id="commentForm">
-        <div id="nickContainer">
-            <h4>Твой ник: <span id="nick">...</span>
-                <!--<input type="text" 
-                       id="nickname" 
-                       placeholder="Твой уникальный ник"
-                       required>-->
-            
-                
-            </div>
-
-            <textarea id="comment" 
-                      rows="5" 
-                      placeholder="Текст комментария..."
-                      required></textarea>
-
-            <button type="submit">Отправить</button>
-            <button onclick="window.location.href='index.html'">Отмена</button>
-        </form>
-    </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
         function getCookie(name) {
         const cookies = document.cookie.split(';'); // Разделяем строку по '; '
         for (let i = 0; i < cookies.length; i++) {
@@ -245,9 +163,12 @@ document.addEventListener('DOMContentLoaded', async () => {
      }
 
     const userNick = getCookie('username');
+    if (!userNick) {
+        window.location.href='/login'
+    }
     console.log(userNick);
 
-    document.getElementById("nick").text = nickname;
+    document.getElementById("nick").textContext = userNick;
 
     async function sendComment(text) {
         try {
