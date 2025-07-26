@@ -61,8 +61,7 @@ exports.handler = async (event) => {
     if (!passwordValid) throw new Error('AUTH: Неверный логин или пароль');
 
     // создаем сессию
-    const sessionId = uuidv4();
-    const expiresAt = new Date(Date.now());
+    const sessionId = uuidv4();const expiresAt = new Date(Date.now() + 30 * 24 * 3600 * 1000);
     
     user.sessions.push({
       id: sessionId,
