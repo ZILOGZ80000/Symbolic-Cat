@@ -86,7 +86,7 @@ exports.handler = async (event) => {
     headers['Set-Cookie'] = [
       `session=${sessionId}; Path=/; Secure; SameSite=Strict;  Max-Age=3600`,
       `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=3600`
-    ].join(', ');
+    ];
 
     return {
       statusCode: 200,
