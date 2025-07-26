@@ -157,10 +157,10 @@ body {
             });
             
             if (!response.ok) {
-                if(response.status === 401) {
+/*                if(response.status === 401) {
                     alert('Сессия истекла!');
                     window.location = '/login.html';
-                }
+                }*/
                 throw new Error('Ошибка загрузки данных');
             }
             const userData = await response.json();
