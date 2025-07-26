@@ -10,7 +10,7 @@ const parseCookies = (headers) => {
 };
 
 exports.handler = async (event) => {
-  const headers = {
+  const multiValueHeaders = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': 'https://symbolic-cat.netlify.app',
     'Access-Control-Allow-Credentials': 'true'
@@ -82,16 +82,25 @@ exports.handler = async (event) => {
     if (!updateResponse.ok) throw new Error(`DB_UPDATE_FAIL: ${await updateResponse.text()}`);
 
     // ставим куки
-    headers['Set-Cookie'] =
-    `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly; Max-Age=3600\n` +
-    `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
+    multiValueHeaders['Set-Cookie'] = [
+  `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly`,
+  `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict`
+];
 
     return {
       statusCode: 200,
-      headers,
+      multiValueHeaders: {
+        'Set-Cookie': [
+          `session=${sessionId}; Path=/; HttpOnly; Max-Age=3600; ${process.env.NODE_ENV === 'production' ? 'Secure; SameSite=Strict' : 'SameSite=Lax'}`,
+          `username=${encodeURIComponent(username)}; Path=/; Max-Age=3600; ${process.env.NODE_ENV === 'production' ? 'Secure; SameSite=Strict' : 'SameSite=Lax'}`
+        ],
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': 'https://symbolic-cat.netlify.app',
+        'Access-Control-Allow-Credentials': 'true'
+      },
       body: JSON.stringify({
         success: true,
-        message: "Вход выполнен!",
+        message: "Вход выполнен! :3",
         username,
         fish: user.fish,
         level: user.level
