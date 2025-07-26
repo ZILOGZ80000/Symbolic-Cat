@@ -60,14 +60,14 @@ exports.handler = async (event) => {
     const passwordValid = await bcrypt.compare(password, user.password);
     if (!passwordValid) throw new Error('AUTH: Неверный логин или пароль');
 
-    // создаем сессию
+    /*// создаем сессию
     const sessionId = uuidv4();const expiresAt = new Date(Date.now() + 30 * 24 * 3600 * 1000);
     
     user.sessions.push({
       id: sessionId,
       expires: expiresAt.toISOString(),
       created: new Date().toISOString()
-    });
+    });*/
 
     // Обновляем пользователя в БД
     const updateResponse = await fetch(`${process.env.DB_URL}/users`, {
@@ -82,22 +82,12 @@ exports.handler = async (event) => {
     if (!updateResponse.ok) throw new Error(`DB_UPDATE_FAIL: ${await updateResponse.text()}`);
 
     // ставим куки
-    multiValueHeaders['Set-Cookie'] = [
-  `session=${sessionId}; Path=/; Secure; SameSite=Strict; HttpOnly`,
-  `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict`
-];
+    headers['Set-Cookie'] = 
+  `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict`;
 
     return {
       statusCode: 200,
-      multiValueHeaders: {
-        'Set-Cookie': [
-          `session=${sessionId}; Path=/; HttpOnly; Max-Age=3600; ${process.env.NODE_ENV === 'production' ? 'Secure; SameSite=Strict' : 'SameSite=Lax'}`,
-          `username=${encodeURIComponent(username)}; Path=/; Max-Age=3600; ${process.env.NODE_ENV === 'production' ? 'Secure; SameSite=Strict' : 'SameSite=Lax'}`
-        ],
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'https://symbolic-cat.netlify.app',
-        'Access-Control-Allow-Credentials': 'true'
-      },
+      headers
       body: JSON.stringify({
         success: true,
         message: "Вход выполнен! :3",
