@@ -148,7 +148,7 @@ body {
 
 <div class="info-card">
 <div class="info-label">Клан</div>
-<div class="info-value" id="achievementsCount">...</div>
+<div class="info-value" id="clan">...</div>
 </div>
 </div>
 
@@ -182,7 +182,8 @@ body {
             safeSetText('fish', userData.fish);
             safeSetText('userEmail', userData.email, 'Не указан');
             safeSetText('type', userData.type);
-            safeSetText('achievementsCount', `${userData.achievements?.length || 0} получено`);          
+            safeSetText('achievementsCount', `${userData.achievements?.length || 0} получено`);
+            safeSetText('clan', userData.clan || 'Не в клане');
             // Форматируем дату
             if(userData.created) {
                 const date = new Date(userData.created);
