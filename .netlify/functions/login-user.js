@@ -83,7 +83,7 @@ exports.handler = async (event) => {
 
     // ставим куки
     headers['Set-Cookie'] = 
-  `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict`;
+  `username=${encodeURIComponent(username)}; Path=/; Secure; SameSite=Strict; Max-Age=2629746`;
 
     return {
       statusCode: 200,
