@@ -174,7 +174,21 @@ body {
                 throw new Error('Ошибка загрузки данных');
             }
             const userData = await response.json();
-            
+            const typeMap = {
+                user:   'Обычный',
+                master: 'Котофей',
+                admin:  'Админ',
+                dev:    'Разработчик',
+                ban:    '<strong style="color: red;">Бан</strong>',
+                mute:   '<strong style="color: red;">Мут</strong>',
+                vip:    'Вип'
+            };
+
+            const visibleType = typeMap[userData.type] || userData.type;
+
+            // способ 1: безопасно через свойства
+            const typeEl = document.getElementById('type');
+            if (typeEl) typeEl.innerHTML = visibleType;
             // Заполняем данные
             document.getElementById('nickname').textContent = userData.username;
             safeSetText('nickname', userData.username);
