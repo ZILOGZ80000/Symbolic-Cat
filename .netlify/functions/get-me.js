@@ -56,7 +56,8 @@ exports.handler = async (event) => {
       created: user.created,
       clan: user.clan,
       icon: user.icon,
-      achievements: user.achievements
+      achievements: user.achievements,
+      type: user.type
     };
 
     return {
