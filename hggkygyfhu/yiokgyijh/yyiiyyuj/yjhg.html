@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Секретный промокод</title>
+    <style>
+        :root {
+            --dark-purple: #4b0082;
+            --dark-blue: #00008b;
+            --background-color: #000000;
+            --text-color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(90deg, var(--dark-purple), var(--dark-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 40s ease-in-out infinite alternate;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .promo-text {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .promo-code {
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 2rem 0;
+            padding: 1rem 2rem;
+            border: 2px solid var(--dark-blue);
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--dark-purple);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--dark-blue);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>Промокод</h1>
+    <div class="promo-text">Поздравляю! Ты нашел секретный промокод который который даёт целых 10 рыб и секретный скин</div>
+    <div class="promo-text">Важно: Промокод можно использовать только 1 раз. Возможно его уже нашли до тебя. Беги в игру проверять скорее!</div>
+    <div class="promo-code" id="promoCode">SUPER_PROMO_BY_ABOBUS</div>
+    <button onclick="copyPromoCode()">Скопировать промокод</button>
+
+    <script>
+        function copyPromoCode() {
+            const promoCode = document.getElementById('promoCode').textContent;
+            navigator.clipboard.writeText(promoCode)
+                .then(() => alert('Промокод скопирован! '))
+                .catch(() => alert('Ошибка копирования '));
+        }
+    </script>
+</body>
+</html>
